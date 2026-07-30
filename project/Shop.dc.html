@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="./rh-header.js?v=6"></script>
+<script src="./rh-scroll.js?v=5"></script>
+<style>
+  html,body{margin:0;padding:0}
+  body{background:#f4f4f2;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  ::selection{background:#151310;color:#e6e6e6}
+  html{scroll-behavior:smooth}
+  a{color:#151310;text-decoration:none; transition:color .18s ease}
+  a:hover{color:#5a5a5a}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--rh-yellow); outline-offset:3px; border-radius:3px;}
+  .rh-carousel img{transition:opacity .35s ease;}
+  .rh-carousel .rh-arrow{opacity:0; transition:opacity .15s ease;}
+  .rh-carousel:hover .rh-arrow{opacity:1;}
+  :root{ --rh-yellow:#EDE94D; }
+  .rh-pill{padding:10px 18px; border-radius:999px; background:var(--rh-yellow); color:#151310 !important; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; display:inline-flex; align-items:center; transition:transform .15s ease, filter .15s ease;}
+  .rh-pill:hover{color:#151310 !important; transform:translateY(-1px); filter:brightness(1.05);}
+  .rh-current{background:transparent !important; color:#151310 !important; text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px; transform:none !important; filter:none !important;}
+  .rh-products{display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:start;}
+  @media (max-width:900px){ .rh-products{grid-template-columns:1fr;} }
+  .rh-page-pad{width:100%; padding:0 40px 60px; box-sizing:border-box;}
+  @media (max-width:640px){ .rh-page-pad{padding:0 16px 60px;} }
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#f4f4f2; box-sizing:border-box; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; color:#151310;">
+
+  <!-- ============ HEADER (shared component) ============ -->
+  <div class="rh-header-slot" data-current="shop"></div>
+
+  <div class="rh-page-pad">
+
+    <!-- ============ TWO-UP PRODUCT GRID ============ -->
+    <section style="margin-top:40px;">
+      <div class="rh-products">
+
+      <!-- T01 -->
+      <div style="display:flex; flex-direction:column; gap:16px; border:1.5px solid #151310; border-radius:2px; padding:24px 22px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:baseline; gap:12px;">
+            <h3 style="margin:0; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1;">T01</h3>
+            <span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:300; letter-spacing:-.02em; line-height:1; color:#6f6f6f;">500G</span>
+          </div>
+          <span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1; color:#151310;">€119</span>
+        </div>
+        <span style="display:inline-block; align-self:flex-start; background:#dcdbd6; color:#151310; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; padding:6px 10px; border-radius:5px;">The Everyday Companion</span>
+        <p style="margin:0; font-size:13.5px; line-height:1.55; color:#3a3a3a;">For the travelling DJ or the home listener. Double-sided — flat for 12&quot; records, built-in 45 adapter for 7&quot;. Light enough to pack two. Heavy enough to matter. Slips into any record bag, so it's always with you.</p>
+        <div class="rh-carousel" style="position:relative;">
+          <img src="{{ t01Photo }}" alt="T01 render" style="width:100%; height:clamp(320px,32vw,440px); object-fit:cover; border-radius:8px; display:block;">
+          <sc-if value="{{ t01Multi }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ t01Prev }}" aria-label="Previous photo" class="rh-arrow" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; border:none; background:#6f6f6f; color:#f4f4f2; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">←</button>
+            <button onClick="{{ t01Next }}" aria-label="Next photo" class="rh-arrow" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; border:none; background:#6f6f6f; color:#f4f4f2; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">→</button>
+            <div style="position:absolute; bottom:10px; left:0; right:0; display:flex; justify-content:center; gap:6px;">
+              <sc-for list="{{ t01Dots }}" as="dot" hint-placeholder-count="2">
+                <span style="width:6px; height:6px; border-radius:50%; background:{{ dot.active }};"></span>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="padding-top:14px;">
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <p style="margin:0; font-size:13.5px; line-height:1.6; color:#3a3a3a;">The T01 is built for the DJ who travels and the listener who doesn't want to think twice. Double-sided: the flat face works on 12&Prime; records; flip it and the integrated 45 adapter handles 7&Prime; singles. At 500g it's substantial enough to stabilize the record, reduce vibration feedback, and flatten mild warps — without being a burden to carry. Pack two in your bag and forget about them until you need them.</p>
+            <div style="display:flex; flex-direction:column;">
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Model</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>T01</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Mass</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>500 g ±2 g</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Material</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Stainless Steel 316L</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Finish</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Brushed / Lathe-Turned</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Profile</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Flat, Stepped Rim</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">7&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Integrated 45 Adapter (Flip Side)</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">12&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Flat Side, Standard Spindle</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); border-bottom:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Portability</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Packable — Fits Two Easily</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding-top:6px;"><a href="mailto:hello@realhands.co?subject=Order%20-%20T01%20500G&body=Hello%2C%0A%0AI%20would%20like%20to%20place%20an%20order%20for%20the%20RealHands%20T01%20(500%20g)%20record%20weight.%0A%0AQuantity%3A%20%0AFull%20name%3A%20%0AShipping%20address%3A%20%0ACountry%3A%20%0A%0AAnything%20I%20should%20know%20about%20my%20setup%3A%20%0A%0AThank%20you!" class="rh-pill">Order</a></div>
+      </div>
+
+      <!-- T02 -->
+      <div style="display:flex; flex-direction:column; gap:16px; border:1.5px solid #151310; border-radius:2px; padding:24px 22px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:baseline; gap:12px;">
+            <h3 style="margin:0; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1;">T02</h3>
+            <span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:300; letter-spacing:-.02em; line-height:1; color:#6f6f6f;">800G</span>
+          </div>
+          <span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1; color:#151310;">€199</span>
+        </div>
+        <span style="display:inline-block; align-self:flex-start; background:#dcdbd6; color:#151310; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; padding:6px 10px; border-radius:5px;">Audiophile Grade</span>
+        <p style="margin:0; font-size:13.5px; line-height:1.55; color:#3a3a3a;">More mass, more control. Includes a retractable 45 adapter, that means it handles both 12&quot; and 7&quot; records without compromise. Built for setups that demand the most from every groove.</p>
+        <div class="rh-carousel" style="position:relative;">
+          <img src="{{ t02Photo }}" alt="T02 render" style="width:100%; height:clamp(320px,32vw,440px); object-fit:cover; border-radius:8px; display:block;">
+          <sc-if value="{{ t02Multi }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ t02Prev }}" aria-label="Previous photo" class="rh-arrow" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; border:none; background:#6f6f6f; color:#f4f4f2; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">←</button>
+            <button onClick="{{ t02Next }}" aria-label="Next photo" class="rh-arrow" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%; border:none; background:#6f6f6f; color:#f4f4f2; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;">→</button>
+            <div style="position:absolute; bottom:10px; left:0; right:0; display:flex; justify-content:center; gap:6px;">
+              <sc-for list="{{ t02Dots }}" as="dot" hint-placeholder-count="2">
+                <span style="width:6px; height:6px; border-radius:50%; background:{{ dot.active }};"></span>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="padding-top:14px;">
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <p style="margin:0; font-size:13.5px; line-height:1.6; color:#3a3a3a;">The T02 is for the setup that deserves more. At 800g it brings serious mass to the platter — pressing the record flat, damping resonance, and pulling the groove into tighter contact with the stylus. A retractable 45 adapter washer means it handles both 12&Prime; and 7&Prime; records in place, without flipping or swapping anything. The dome profile shifts the weight distribution and makes it easier to grip and place precisely.</p>
+            <div style="display:flex; flex-direction:column;">
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Model</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>T02</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Mass</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>800 g ±2 g</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Material</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Stainless Steel 316L</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Finish</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Brushed / Lathe-Turned</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Profile</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Dome Top, Multi-Layer Base</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">7&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Retractable 45 Adapter Washer</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">12&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Standard Spindle, Direct</span></div>
+              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); border-bottom:1px solid rgba(0,0,0,.16); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Spindle Lock</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>3× Hex Grub Screws</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding-top:6px;"><a href="mailto:hello@realhands.co?subject=Order%20-%20T02%20800G&body=Hello%2C%0A%0AI%20would%20like%20to%20place%20an%20order%20for%20the%20RealHands%20T02%20(800%20g)%20record%20weight.%0A%0AQuantity%3A%20%0AFull%20name%3A%20%0AShipping%20address%3A%20%0ACountry%3A%20%0A%0AAnything%20I%20should%20know%20about%20my%20setup%3A%20%0A%0AThank%20you!" class="rh-pill">Order</a></div>
+      </div>
+
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer style="margin-top:70px; padding-top:34px; border-top:1px solid rgba(0,0,0,.16);">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:32px;">
+        <div>
+          <span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:#6f6f6f;">© 2026 RealHands</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:11px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
+          <span style="color:#9a9a9a;">Contact</span>
+          <a href="#">hello@realhands.co</a>
+          <a href="https://instagram.com/madebyrealhands" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1240, &quot;height&quot;: 1600}}">
+class Component extends DCLogic {
+  state = { t01Index: 0, t02Index: 0 };
+
+  t01Images = ['t01-render.png', 't01-carousel-2.png', 't01-carousel-3.png'];
+  t02Images = ['t02-render.png', 't02-carousel-2.png', 't02-carousel-3.png', 't02-carousel-4.png'];
+
+  componentDidMount() {
+    clearInterval(this._t01Timer);
+    clearInterval(this._t02Timer);
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const carousels = () => document.querySelectorAll('.rh-carousel');
+    this._t01Timer = setInterval(() => {
+      const c = carousels()[0];
+      if (c && c.matches(':hover')) return; // pause while hovered
+      this.setState(s => ({ t01Index: (s.t01Index + 1) % this.t01Images.length }));
+    }, 4000);
+    this._t02Timer = setInterval(() => {
+      const c = carousels()[1];
+      if (c && c.matches(':hover')) return;
+      this.setState(s => ({ t02Index: (s.t02Index + 1) % this.t02Images.length }));
+    }, 4800);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._t01Timer);
+    clearInterval(this._t02Timer);
+  }
+
+  renderVals() {
+    const t01i = this.state.t01Index;
+    const t02i = this.state.t02Index;
+    return {
+      t01Photo: this.t01Images[t01i],
+      t02Photo: this.t02Images[t02i],
+      t01Multi: this.t01Images.length > 1,
+      t02Multi: this.t02Images.length > 1,
+      t01Prev: () => this.setState(s => ({ t01Index: (s.t01Index - 1 + this.t01Images.length) % this.t01Images.length })),
+      t01Next: () => this.setState(s => ({ t01Index: (s.t01Index + 1) % this.t01Images.length })),
+      t02Prev: () => this.setState(s => ({ t02Index: (s.t02Index - 1 + this.t02Images.length) % this.t02Images.length })),
+      t02Next: () => this.setState(s => ({ t02Index: (s.t02Index + 1) % this.t02Images.length })),
+      t01Dots: this.t01Images.map((_, i) => ({ active: i === t01i ? '#151310' : 'rgba(21,19,16,.3)' })),
+      t02Dots: this.t02Images.map((_, i) => ({ active: i === t02i ? '#151310' : 'rgba(21,19,16,.3)' })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
