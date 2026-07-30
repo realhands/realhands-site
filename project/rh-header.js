@@ -57,8 +57,8 @@
     var shopCls = 'rhh__pill' + (current === 'shop' ? ' rhh__pill--current' : '');
     slot.innerHTML =
       '<header class="rhh">' +
-        '<a href="RealHands.dc.html" class="rhh__logo" aria-label="RealHands home">' +
-          '<img src="realhands-mark.png" alt="RealHands mark">' +
+        '<a href="RealHands.dc.html" class="rhh__logo" aria-label="realhands home">' +
+          '<img src="realhands-mark.png" alt="realhands mark">' +
           '<img src="realhands-wordmark.png" class="wordmark" alt="realhands">' +
         '</a>' +
         '<nav class="rhh__nav">' +
