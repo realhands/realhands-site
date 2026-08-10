@@ -8,15 +8,28 @@
 <body>
 <x-dc>
 <helmet>
+<link rel="icon" type="image/png" href="realhands-mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="./image-slot.js"></script>
-<script src="./rh-header.js?v=6"></script>
-<script src="./rh-scroll.js?v=5"></script>
+<script src="./rh-header.js?v=8"></script>
+<script src="./rh-scroll.js?v=6"></script>
 <style>
+  @font-face{
+    font-family:'Archivo';
+    src:url('fonts/Archivo-Variable.ttf') format('truetype-variations');
+    font-weight:100 900;
+    font-display:swap;
+  }
+  @font-face{font-family:'ABC Diatype'; src:url('fonts/ABCDiatype-Regular.otf') format('opentype'); font-weight:400; font-display:swap;}
+  @font-face{font-family:'ABC Diatype'; src:url('fonts/ABCDiatype-Medium.otf') format('opentype'); font-weight:500 600; font-display:swap;}
+  @font-face{font-family:'ABC Diatype'; src:url('fonts/ABCDiatype-Bold.otf') format('opentype'); font-weight:700 900; font-display:swap;}
+  @font-face{font-family:'ABC Diatype Mono'; src:url('fonts/ABCDiatypeMono-Variable.ttf') format('truetype-variations'); font-weight:100 900; font-display:swap;}
   html,body{margin:0;padding:0}
   body{background:#f4f4f2;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  /* Archivo carries the display voice; everything else is ABC Diatype (text + mono) */
+  .rh-hero__title, .rh-stagger, .rh-life__title, .rh-story__lead, .rh-def__title, .rh-swirl__line{font-family:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;}
   ::selection{background:#151310;color:#e6e6e6}
   html{scroll-behavior:smooth}
   a{color:#151310;text-decoration:none; transition:color .18s ease}
@@ -26,18 +39,20 @@
   .rh-carousel:hover .rh-arrow{opacity:1;}
 
   /* ---- funky yellow ---- */
-  :root{ --rh-yellow:#EDE94D; }
+  /* --rh-pin = how much scrolling the pinned assembly scene takes (tune this)
+     --rh-title = one size for every section title, so they all match */
+  :root{ --rh-yellow:#EDE94D; --rh-pin:150vh; --rh-title:clamp(22px,2.9vw,40px); }
 
   /* ---- full-bleed hero ---- */
   /* curtain reveal: hero pins at the top; the rest of the page slides up over it */
   .rh-hero{position:sticky; top:0; width:100%; height:100vh; height:100svh; overflow:hidden; background:#0b0a08; z-index:0;}
-  .rh-waves, .rh-life, .rh-defs, .rh-swirl, .rh-wrap{position:relative; z-index:1;}
+  .rh-story, .rh-waves, .rh-life, .rh-defs, .rh-swirl, .rh-wrap{position:relative; z-index:1;}
   .rh-hero__video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;}
   .rh-hero__scrim{position:absolute; inset:0; z-index:1; pointer-events:none;
     background:linear-gradient(180deg, rgba(11,10,8,.6) 0%, rgba(11,10,8,.12) 22%, rgba(11,10,8,0) 48%, rgba(11,10,8,.34) 72%, rgba(11,10,8,.84) 100%);}
   .rh-hero__frame{position:absolute; inset:0; z-index:2;}
   .rh-hero__eyebrow{position:absolute; z-index:2; top:calc(clamp(88px,11vh,128px) + 40px); left:40px; max-width:min(360px,72vw); color:rgba(244,244,242,.94); font-size:clamp(13px,1.4vw,16px); line-height:1.5;}
-  .rh-hero__discover{display:inline-flex; align-items:center; gap:9px; margin-top:18px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#f4f4f2 !important; padding-bottom:4px; border-bottom:1px solid rgba(244,244,242,.4);}
+  .rh-hero__discover{display:inline-flex; align-items:center; gap:9px; margin-top:18px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#f4f4f2 !important; padding-bottom:4px; border-bottom:1px solid rgba(244,244,242,.4);}
   .rh-hero__discover:hover{color:var(--rh-yellow) !important; border-color:var(--rh-yellow);}
   .rh-hero__title{position:absolute; z-index:2; left:40px; right:40px; bottom:calc(clamp(18px,4vh,50px) + 20px);
     margin:0; color:var(--rh-yellow); font-weight:700; letter-spacing:-.04em; line-height:.92; font-size:clamp(30px,9.5vw,150px); text-wrap:balance;}
@@ -46,28 +61,51 @@
   .rh-wrap{width:100%; padding:70px 40px 0; box-sizing:border-box; background:#f4f4f2;}
 
   /* ---- shared bits (reused across sections) ---- */
-  .rh-eyebrow{display:inline-flex; align-items:center; gap:10px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#151310;}
+  .rh-eyebrow{display:inline-flex; align-items:center; gap:10px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#151310;}
   .rh-eyebrow::before{content:""; width:9px; height:9px; background:var(--rh-yellow); border-radius:2px; display:inline-block;}
-  .rh-cta{display:inline-flex; align-items:center; gap:8px; background:var(--rh-yellow); color:#151310 !important; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; padding:13px 24px; border-radius:999px; transition:transform .15s ease, filter .15s ease;}
+  .rh-cta{display:inline-flex; align-items:center; gap:8px; background:var(--rh-yellow); color:#151310 !important; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; padding:13px 24px; border-radius:999px; transition:transform .15s ease, filter .15s ease;}
   .rh-cta:hover{color:#151310 !important; transform:translateY(-1px); filter:brightness(1.05);}
   .rh-cta span{transition:transform .18s ease;}
   .rh-cta:hover span{transform:translateX(4px);}
 
-  /* ---- SECTION 2: waves + staggered headline (white) ---- */
-  .rh-waves{background:#f4f4f2; padding:clamp(43px,6vw,84px) 0 clamp(72px,10vw,140px);}
+  /* ---- THE STORY: first curtain block after the hero (full-viewport scene) ---- */
+  .rh-story{background:#f4f4f2; padding:0;}
+  .rh-story__inner{width:100%; padding:0 0 0 40px; box-sizing:border-box; display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,64px); align-items:center;}
+  .rh-story__text{display:flex; flex-direction:column; gap:22px; padding:clamp(56px,8vw,110px) 0;}
+  .rh-story__lead{margin:0; font-size:var(--rh-title); font-weight:700; letter-spacing:-.02em; line-height:1.25;}
+  .rh-story__p{margin:0; max-width:62ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
+  .rh-story__link{display:inline-flex; align-items:center; gap:9px; margin-top:6px; align-self:flex-start; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#151310 !important; padding-bottom:4px; border-bottom:1px solid rgba(21,19,16,.4);}
+  .rh-story__link:hover{color:#5a5a5a !important; border-color:#5a5a5a;}
+  .rh-story__img{overflow:hidden; margin:0;}
+  .rh-story__img img{width:100%; height:100vh; height:100svh; object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
+
+  /* ---- SECTION 3: waves + staggered headline ----
+     Starts cream like its neighbours and turns dark once it owns the screen,
+     then back to cream as it leaves. Section 4 stays cream throughout. */
+  .rh-waves{background:#f4f4f2; color:#151310; padding:clamp(43px,6vw,84px) 0 clamp(72px,10vw,140px);}
+  .rh-waves.is-dark{background:#0b0a08; color:#f4f4f2;}
+  .rh-waves .rh-stagger, .rh-waves .rh-def__title{color:inherit;}
+  .rh-waves .rh-def__body{color:#6f6f6b;}
+  .rh-waves.is-dark .rh-def__body{color:rgba(244,244,242,.66);}
   .rh-waves__inner{width:100%; padding:0 40px; box-sizing:border-box; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(30px,5vw,68px); align-items:center;}
   .rh-waves__media{position:relative; overflow:hidden; aspect-ratio:1/1; min-height:300px; background:#0b0a08;}
   .rh-waves__media img, .rh-waves__media video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
 
-  .rh-stagger{display:flex; flex-direction:column; gap:clamp(6px,1vw,12px); color:#151310; font-weight:800; text-transform:uppercase; letter-spacing:-.02em; line-height:1; font-size:clamp(20px,2.5vw,34px);}
+  .rh-stagger{display:flex; flex-direction:column; gap:clamp(6px,1vw,12px); color:#151310; font-weight:800; text-transform:uppercase; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title);}
   .rh-stagger__l1{align-self:flex-start;}
   .rh-stagger__l2{align-self:center;}
   .rh-stagger__l3{align-self:flex-end;}
 
+  /* three engineering beats */
+  .rh-waves__copy{display:flex; flex-direction:column; justify-content:center;}
+  .rh-waves__beats{display:flex; flex-direction:column; gap:clamp(18px,2.2vw,28px); margin-top:clamp(24px,3vw,38px);}
+  .rh-waves__beats .rh-def{padding-top:0;}
+  .rh-waves__beats .rh-def__title{margin-top:0;}
+
   /* ---- SECTION 3: lifestyle (white) ---- */
   .rh-life{background:#f4f4f2; color:#151310; padding:clamp(18px,3vw,36px) 0 clamp(80px,10vw,150px);}
   .rh-life__inner{width:100%; padding:0 40px; box-sizing:border-box;}
-  .rh-life__title{margin:0 0 clamp(40px,5.5vw,76px); font-weight:800; text-transform:uppercase; letter-spacing:-.02em; line-height:1; font-size:clamp(20px,2.5vw,34px); display:flex; flex-direction:column; gap:clamp(6px,1vw,12px);}
+  .rh-life__title{margin:0 0 clamp(40px,5.5vw,76px); font-weight:800; text-transform:uppercase; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title); display:flex; flex-direction:column; gap:clamp(6px,1vw,12px);}
   .rh-life__title .l2{padding-left:2.4em;}
   .rh-life__title .l3{padding-left:1em;}
   .rh-life__title em{font-style:normal; background:var(--rh-yellow); color:#151310; padding:0 .1em; box-decoration-break:clone; -webkit-box-decoration-break:clone;}
@@ -76,23 +114,31 @@
   .rh-life__img img{width:100%; aspect-ratio:3/4; object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:translate3d(0,0,0) scale(1.2);}
   .rh-life__img--b{margin-top:clamp(44px,11vw,130px);}
 
-  /* ---- SECTION 4: what defines it + CTA ---- */
+  /* ---- SECTION 4: the weight (pinned scroll-scrub) ----
+     Base styles = the static fallback (reduced motion / no JS): a normal
+     2x2 grid. The pin + stacked panels are layered on in the motion-safe
+     block further down. */
   .rh-defs{background:#f4f4f2; padding:clamp(24px,3vw,44px) 0 clamp(84px,10vw,150px);}
+  .rh-defs__pin{width:100%;}
   .rh-defs__inner{width:100%; padding:0 40px; box-sizing:border-box;}
-  .rh-defs__layout{margin-top:clamp(30px,4vw,52px); display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,80px); align-items:center;}
+  .rh-defs__layout{display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,80px); align-items:center;}
   .rh-defs__media{margin:0;}
-  .rh-defs__media img{width:100%; max-width:560px; height:auto; display:block; margin:0 auto; mix-blend-mode:multiply;}
-  .rh-defs__list{display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,3.5vw,48px) clamp(20px,2.5vw,36px); align-content:center;}
+  .rh-defs__media img, .rh-defs__media video{width:100%; max-width:560px; height:auto; display:block; margin:0 auto; mix-blend-mode:multiply;}
+  .rh-defs__col{display:flex; flex-direction:column; gap:clamp(22px,3vw,34px);}
+  .rh-defs__panels{display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,3.5vw,48px) clamp(20px,2.5vw,36px); align-content:center;}
   .rh-def{padding-top:4px;}
-  .rh-def__num{font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; letter-spacing:.08em; color:#8a8a86;}
+  .rh-def__num{font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:12px; letter-spacing:.08em; color:#8a8a86;}
   .rh-def__title{margin:16px 0 0; font-size:clamp(17px,1.6vw,22px); font-weight:700; letter-spacing:-.02em; line-height:1.15;}
   .rh-def__body{margin:8px 0 0; font-size:12.5px; line-height:1.55; color:#6f6f6b;}
-  .rh-defs__cta{grid-column:1 / -1; margin-top:clamp(4px,1vw,12px);}
-  @media (max-width:520px){ .rh-defs__list{grid-template-columns:1fr;} }
+  .rh-defs__cta{margin-top:clamp(4px,1vw,12px);}
+  @media (max-width:520px){ .rh-defs__panels{grid-template-columns:1fr;} }
 
   /* ---- SECTION 5: swirl (full-bleed closer) ---- */
   .rh-swirl{width:100%; background:#0b0a08; overflow:hidden; line-height:0;}
   .rh-swirl video{width:100%; height:auto; display:block;}
+  .rh-swirl__overlay{position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(18px,2.5vw,30px); text-align:center; line-height:1.15; padding:16px;
+    background:radial-gradient(ellipse 70% 55% at 50% 50%, rgba(11,10,8,.45) 0%, rgba(11,10,8,.18) 55%, rgba(11,10,8,0) 78%);}
+  .rh-swirl__line{margin:0; color:#f4f4f2; font-weight:800; letter-spacing:-.02em; font-size:var(--rh-title);}
 
   /* parallax targets keep extra scale so the JS translate never exposes an edge */
   .rh-parallax{will-change:transform;}
@@ -121,9 +167,31 @@
     }
     .rh-reveal{opacity:0; transform:translateY(22px); transition:opacity .75s ease, transform .75s cubic-bezier(.2,.7,.2,1);}
     .rh-reveal.in{opacity:1; transform:none;}
-    .rh-defs__list .rh-def:nth-child(2){transition-delay:.07s}
-    .rh-defs__list .rh-def:nth-child(3){transition-delay:.14s}
-    .rh-defs__list .rh-def:nth-child(4){transition-delay:.21s}
+    .rh-story__img.rh-reveal{transition-delay:.1s}
+    /* the cream -> black -> cream swap is animated, not a hard edge */
+    .rh-waves, .rh-waves .rh-stagger, .rh-waves .rh-def__title, .rh-waves .rh-def__body{
+      transition:background-color .7s ease, color .7s ease;}
+
+    /* ---- the weight: pinned scene ----
+       The section is tall; the inner wrapper sticks for its whole length, so
+       the scene holds still while the scroll drives the assembly video and
+       steps the four texts. Progress is read off this geometry in setupScrub. */
+    .rh-defs{height:calc(100svh + var(--rh-pin)); padding:0;}
+    /* sticky makes its own stacking context, so the video's mix-blend-mode needs
+       an opaque backdrop here or its white plate stops blending into the page */
+    .rh-defs__pin{position:sticky; top:0; height:100svh; display:flex; align-items:center; background:#f4f4f2;}
+    /* min-height reserves room for the tallest panel so stepping never jumps the CTA */
+    .rh-defs__panels{display:block; position:relative; min-height:clamp(140px,12vw,158px);}
+    .rh-defs__panel{position:absolute; top:0; left:0; width:100%;
+      opacity:0; transform:translateY(14px); pointer-events:none;
+      transition:opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1);}
+    .rh-defs__panel.is-active{opacity:1; transform:none; pointer-events:auto;}
+    /* one panel at a time can afford to be much larger, so the change is obvious */
+    .rh-defs__panel .rh-def__title{margin:14px 0 0; font-size:clamp(24px,2.7vw,38px); line-height:1.1;}
+    .rh-defs__panel .rh-def__body{margin:14px 0 0; font-size:clamp(14px,1.15vw,17px); line-height:1.6; max-width:44ch;}
+    .rh-defs__panel .rh-def__num{font-size:13px;}
+    .rh-waves__beats .rh-def:nth-child(2){transition-delay:.07s}
+    .rh-waves__beats .rh-def:nth-child(3){transition-delay:.14s}
     /* line-by-line cascade for the two staggered titles — elegant, noticeable */
     .rh-clip{opacity:1 !important; transform:none !important;}
     .rh-clip > span{opacity:0; transform:translateY(.9em); transition:opacity .7s ease, transform .95s cubic-bezier(.16,1,.3,1);}
@@ -139,18 +207,26 @@
     .rh-life__title .l2{padding-left:1.1em;}
     .rh-life__grid{grid-template-columns:1fr; gap:16px;}
     .rh-life__img--b{margin-top:0;}
-    .rh-defs__layout{grid-template-columns:1fr;}
+    /* stacked pinned scene has to fit one screen: everything sized in svh so it
+       scales with the viewport instead of overflowing on short screens */
+    .rh-defs__layout{grid-template-columns:1fr; gap:clamp(14px,2.5svh,26px);}
+    .rh-defs__media img, .rh-defs__media video{max-height:32svh; width:auto; max-width:100%;}
+    .rh-defs__col{gap:clamp(12px,2svh,22px);}
+    .rh-defs__panels{min-height:clamp(112px,26svh,190px);}
+    .rh-story__inner{grid-template-columns:1fr;}
+    .rh-story__img img{height:clamp(280px,55vw,420px);}
   }
   /* mobile: 16px side margins everywhere */
   @media (max-width:640px){
-    .rh-wrap, .rh-waves__inner, .rh-life__inner, .rh-defs__inner{padding-left:16px; padding-right:16px;}
+    .rh-wrap, .rh-waves__inner, .rh-life__inner, .rh-defs__inner, .rh-waves__beats{padding-left:16px; padding-right:16px;}
+    .rh-story__inner{padding-left:16px; padding-right:0;}
     .rh-hero__eyebrow{left:16px;}
     .rh-hero__title{left:16px; right:16px;}
   }
 </style>
 </helmet>
 
-<div style="background:#f4f4f2; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; color:#151310;">
+<div style="background:#f4f4f2; font-family:'ABC Diatype','Helvetica Neue',Helvetica,Arial,sans-serif; color:#151310;">
 
   <!-- ============ HEADER (shared component, fixed above everything) ============ -->
   <div class="rh-header-slot" data-theme="light" data-current="home"></div>
@@ -163,11 +239,25 @@
     <!-- overlay content, aligned to the same rail as the other pages -->
     <div class="rh-hero__frame">
       <div class="rh-hero__eyebrow">
-        <span style="display:block;">Handcrafted stainless steel weights, engineered to settle the platter and tame resonance.</span>
+        <span style="display:block;">Handmade record weights. Made to still your record, and to let your system play everything it was built for.</span>
         <a href="Shop.dc.html" class="rh-hero__discover">Discover the weights <span aria-hidden="true">&rarr;</span></a>
       </div>
 
       <h1 class="rh-hero__title">Engineered for Better&nbsp;Listening.</h1>
+    </div>
+  </section>
+
+  <!-- ============ THE STORY (first curtain block) ============ -->
+  <section class="rh-story">
+    <div class="rh-story__inner">
+      <div class="rh-story__text rh-reveal">
+        <p class="rh-story__lead">Made by real hands.</p>
+        <p class="rh-story__p">Born between Beirut and Paris, each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
+        <a href="Story.dc.html" class="rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <figure class="rh-story__img rh-reveal">
+        <img src="workshop-1.jpg" alt="The family workshop, stainless steel shaped by hand" class="rh-parallax" data-parallax="0.12" data-parallax-scale="1.18">
+      </figure>
     </div>
   </section>
 
@@ -177,10 +267,27 @@
       <div class="rh-waves__media rh-reveal">
         <video src="uploads/waves2.mp4" autoplay loop muted playsinline preload="auto" aria-label="Sound-wave ripples"></video>
       </div>
-      <div class="rh-stagger rh-reveal rh-clip">
-        <span class="rh-stagger__l1">Dense enough</span>
-        <span class="rh-stagger__l2">to matter</span>
-        <span class="rh-stagger__l3">acoustically</span>
+      <div class="rh-waves__copy">
+        <div class="rh-stagger rh-reveal rh-clip">
+          <span class="rh-stagger__l1">Dense enough</span>
+          <span class="rh-stagger__l2">to matter</span>
+          <span class="rh-stagger__l3">acoustically</span>
+        </div>
+
+        <div class="rh-waves__beats">
+          <div class="rh-def rh-reveal">
+            <h3 class="rh-def__title">Coupling.</h3>
+            <p class="rh-def__body">500 to 800 grams press the record into full contact with the platter. No air gap, no drum skin. One quiet interface.</p>
+          </div>
+          <div class="rh-def rh-reveal">
+            <h3 class="rh-def__title">Damping.</h3>
+            <p class="rh-def__body">Vinyl rings when the stylus excites it and comes back as glare. Dense steel above the label settles it.</p>
+          </div>
+          <div class="rh-def rh-reveal">
+            <h3 class="rh-def__title">Flattening.</h3>
+            <p class="rh-def__body">Most records carry a slight dish. Steady mass tames it, so the stylus tracks the groove's true path.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -190,8 +297,8 @@
     <div class="rh-life__inner">
       <h2 class="rh-life__title rh-reveal rh-clip">
         <span class="l1">Precise enough</span>
-        <span class="l2">to be <em>beautiful</em></span>
-        <span class="l3">as an object.</span>
+        <span class="l2">to be <em>missed</em></span>
+        <span class="l3">when it's gone.</span>
       </h2>
       <div class="rh-life__grid">
         <figure class="rh-life__img rh-life__img--a rh-reveal">
@@ -204,39 +311,40 @@
     </div>
   </section>
 
-  <!-- ============ SECTION 4 — WHAT DEFINES IT ============ -->
+  <!-- ============ SECTION 5 — THE WEIGHT (pinned scroll-scrub) ============ -->
   <section class="rh-defs">
-    <div class="rh-defs__inner">
-      <div class="rh-stagger rh-reveal">
-        <span class="rh-stagger__l1">What defines it</span>
-      </div>
-      <div class="rh-defs__layout">
-        <figure class="rh-defs__media rh-reveal">
-          <img src="uploads/explodedview.png" alt="Exploded view of the realhands record weight">
-        </figure>
-        <div class="rh-defs__list">
-          <div class="rh-def rh-reveal">
-            <div class="rh-def__num">01</div>
-            <h3 class="rh-def__title">Handcrafted solid stainless steel</h3>
-            <p class="rh-def__body">Handcrafted from solid stainless steel. No molds, no shortcuts. Each piece is turned and finished by hand, so each piece is uniquely yours.</p>
-          </div>
-          <div class="rh-def rh-reveal">
-            <div class="rh-def__num">02</div>
-            <h3 class="rh-def__title">More weight. Less space.</h3>
-            <p class="rh-def__body">Dense stainless steel packs exceptional mass into a compact form, delivering stability without unnecessary bulk. Small enough to slip into a record bag and travel wherever your records go.</p>
-          </div>
-          <div class="rh-def rh-reveal">
-            <div class="rh-def__num">03</div>
-            <h3 class="rh-def__title">Hear more of the record</h3>
-            <p class="rh-def__body">Added inertia at the platter tames resonance and micro-vibration, so the needle reads every groove true. Cleaner lows, tighter imaging, music the way it was cut.</p>
-          </div>
-          <div class="rh-def rh-reveal">
-            <div class="rh-def__num">04</div>
-            <h3 class="rh-def__title">Built to last</h3>
-            <p class="rh-def__body">Stainless steel won't rust, corrode, or degrade with handling over years of use. It's also fully recyclable, a weight you pass down, not replace.</p>
-          </div>
-          <div class="rh-defs__cta rh-reveal">
-            <a href="Shop.dc.html" class="rh-cta">Discover the weights</a>
+    <div class="rh-defs__pin">
+      <div class="rh-defs__inner">
+        <div class="rh-defs__layout">
+          <figure class="rh-defs__media rh-reveal">
+            <video ref="{{ scrubVideoRef }}" src="uploads/assembly.mp4" poster="uploads/assembly-poster.jpg" muted playsinline preload="auto" aria-label="Exploded view of the realhands record weight assembling"></video>
+          </figure>
+          <div class="rh-defs__col">
+            <div class="rh-defs__panels">
+              <div class="rh-def rh-defs__panel is-active">
+                <div class="rh-def__num">01</div>
+                <h3 class="rh-def__title">Handcrafted, solid, 316L.</h3>
+                <p class="rh-def__body">No molds, no shortcuts. Each piece is lathe-turned and finished by hand, so each one is uniquely yours.</p>
+              </div>
+              <div class="rh-def rh-defs__panel">
+                <div class="rh-def__num">02</div>
+                <h3 class="rh-def__title">More weight, less space.</h3>
+                <p class="rh-def__body">Maximum mass in a compact form. Small enough for a record bag, present enough for the platter.</p>
+              </div>
+              <div class="rh-def rh-defs__panel">
+                <div class="rh-def__num">03</div>
+                <h3 class="rh-def__title">Hear more of the record.</h3>
+                <p class="rh-def__body">Added inertia tames resonance and micro-vibration, so the needle reads every groove true.</p>
+              </div>
+              <div class="rh-def rh-defs__panel">
+                <div class="rh-def__num">04</div>
+                <h3 class="rh-def__title">Built to be passed down.</h3>
+                <p class="rh-def__body">Stainless steel doesn't rust, wear, or age out. A weight you pass down, not replace.</p>
+              </div>
+            </div>
+            <div class="rh-defs__cta">
+              <a href="Shop.dc.html" class="rh-cta">See full specs &amp; order <span aria-hidden="true">&rarr;</span></a>
+            </div>
           </div>
         </div>
       </div>
@@ -246,6 +354,10 @@
   <!-- ============ SECTION 5 — SWIRL (full-bleed closer) ============ -->
   <section class="rh-swirl">
     <video src="uploads/swirl-web.mp4" autoplay loop muted playsinline preload="auto" aria-label="Swirling record motion"></video>
+    <div class="rh-swirl__overlay rh-reveal">
+      <p class="rh-swirl__line">Still records. Real hands.</p>
+      <a href="Shop.dc.html" class="rh-cta">Choose your weight</a>
+    </div>
   </section>
 
   <!-- ============ FOOTER ============ -->
@@ -255,9 +367,9 @@
     <footer style="margin-top:0; padding-top:34px; padding-bottom:60px; border-top:1px solid rgba(0,0,0,.16);">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:32px;">
         <div>
-          <span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:#6f6f6f;">© 2026 realhands</span>
+          <span style="font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:#6f6f6f;">© 2026 realhands</span>
         </div>
-        <div style="display:flex; flex-direction:column; gap:11px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
+        <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
           <span style="color:#9a9a9a;">Contact</span>
           <a href="#">hello@realhands.co</a>
           <a href="https://instagram.com/madebyrealhands" target="_blank" rel="noopener">Instagram</a>
@@ -277,6 +389,8 @@ class Component extends DCLogic {
   componentDidMount() {
     this.setupParallax();
     this.setupReveal();
+    this.setupScrub();
+    this.setupTheme();
 
     const v = this.heroVideoEl;
     if (v) {
@@ -309,6 +423,113 @@ class Component extends DCLogic {
     }
     if (this._parRaf) cancelAnimationFrame(this._parRaf);
     if (this._revObs) this._revObs.disconnect();
+    if (this._scrubScroll) window.removeEventListener('scroll', this._scrubScroll);
+    if (this._scrubRaf) cancelAnimationFrame(this._scrubRaf);
+    if (this._themeScroll) {
+      window.removeEventListener('scroll', this._themeScroll);
+      window.removeEventListener('resize', this._themeScroll);
+    }
+    if (this._themeRaf) cancelAnimationFrame(this._themeRaf);
+  }
+
+  /* section 3 turns dark once it owns the screen and back to cream as it goes.
+     Geometry is read every frame so the state can never get stuck out of sync. */
+  setupTheme() {
+    if (this._themeScroll) {
+      window.removeEventListener('scroll', this._themeScroll);
+      window.removeEventListener('resize', this._themeScroll);
+    }
+    if (this._themeRaf) cancelAnimationFrame(this._themeRaf);
+    this._themeRaf = null;
+
+    const el = document.querySelector('.rh-waves');
+    if (!el) return;
+
+    const update = () => {
+      this._themeRaf = null;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (vh < 1) return;
+      const r = el.getBoundingClientRect();
+      const mid = vh * 0.5;
+      const dark = r.top < mid && r.bottom > mid;
+      el.classList.toggle('is-dark', dark);
+      // the header only needs light ink while the dark block is actually under it
+      document.documentElement.classList.toggle('rh-dark-zone', dark && r.top <= 90 && r.bottom > 90);
+    };
+
+    const onScroll = () => { if (this._themeRaf == null) this._themeRaf = requestAnimationFrame(update); };
+    this._themeScroll = onScroll;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  }
+
+  /* scroll-scrubbed assembly: scrolling down assembles the exploded weight,
+     scrolling up takes it apart. The video is never played — the scroll owns
+     the playhead (encoded all-keyframe for precise seeking). */
+  setupScrub() {
+    if (this._scrubScroll) window.removeEventListener('scroll', this._scrubScroll);
+    if (this._scrubRaf) cancelAnimationFrame(this._scrubRaf);
+    this._scrubRaf = null;
+    this._scrubProg = 0;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const panels = Array.prototype.slice.call(document.querySelectorAll('.rh-defs__panel'));
+    this._stage = 0;
+
+    // 0 the instant the scene locks into place, 1 when the pin releases.
+    // Nothing plays while the section is still arriving.
+    const targetProg = () => {
+      const sec = document.querySelector('.rh-defs');
+      if (!sec) return 0;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (vh < 1) return 0;              // degenerate viewport (hidden/prerender)
+      const pin = sec.offsetHeight - vh; // scrollable distance while pinned
+      if (pin <= 0) return 0;            // unpinned (reduced motion) — hold exploded
+      return Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / pin));
+    };
+
+    const applyStage = (p) => {
+      if (!panels.length) return;
+      const f = p * panels.length;
+      let s = this._stage;
+      // ±0.06 of a stage of hysteresis so parking on a boundary can't flicker
+      if (f > s + 1 + 0.06) s = Math.min(panels.length - 1, Math.floor(f));
+      else if (f < s - 0.06) s = Math.max(0, Math.floor(f));
+      if (s !== this._stage) {
+        this._stage = s;
+        for (let i = 0; i < panels.length; i++) panels[i].classList.toggle('is-active', i === s);
+      }
+    };
+
+    const update = () => {
+      this._scrubRaf = null;
+      const el = this.scrubVideoEl;
+      if (!el) return;
+      const t = targetProg();
+      // ease toward the target so the assembly glides with the page's scroll feel
+      this._scrubProg += (t - this._scrubProg) * 0.18;
+      if (Math.abs(t - this._scrubProg) > 0.002) {
+        this._scrubRaf = requestAnimationFrame(update);
+      } else {
+        this._scrubProg = t;
+      }
+      applyStage(this._scrubProg);
+      if (el.readyState >= 1 && el.duration) {
+        const want = this._scrubProg * Math.max(0, el.duration - 0.05);
+        if (Math.abs((el.currentTime || 0) - want) > 0.02) el.currentTime = want;
+      }
+    };
+
+    const onScroll = () => { if (this._scrubRaf == null) this._scrubRaf = requestAnimationFrame(update); };
+    this._scrubScroll = onScroll;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const el = this.scrubVideoEl;
+    if (el) {
+      el.pause();
+      if (el.readyState < 1) el.addEventListener('loadedmetadata', onScroll, { once: true });
+    }
+    onScroll();
   }
 
   setupReveal() {
@@ -375,6 +596,7 @@ class Component extends DCLogic {
     const t02i = this.state.t02Index;
     return {
       heroVideoRef: (el) => { this.heroVideoEl = el; },
+      scrubVideoRef: (el) => { this.scrubVideoEl = el; },
       t01Photo: this.t01Images[t01i],
       t02Photo: this.t02Images[t02i],
       t01Multi: this.t01Images.length > 1,

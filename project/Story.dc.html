@@ -8,21 +8,33 @@
 <body>
 <x-dc>
 <helmet>
+<link rel="icon" type="image/png" href="realhands-mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="./rh-header.js?v=6"></script>
-<script src="./rh-scroll.js?v=5"></script>
+<script src="./rh-header.js?v=8"></script>
+<script src="./rh-scroll.js?v=6"></script>
 <style>
+  @font-face{
+    font-family:'Archivo';
+    src:url('fonts/Archivo-Variable.ttf') format('truetype-variations');
+    font-weight:100 900;
+    font-display:swap;
+  }
+  @font-face{font-family:'ABC Diatype'; src:url('fonts/ABCDiatype-Regular.otf') format('opentype'); font-weight:400; font-display:swap;}
+  @font-face{font-family:'ABC Diatype'; src:url('fonts/ABCDiatype-Medium.otf') format('opentype'); font-weight:500 600; font-display:swap;}
+  @font-face{font-family:'ABC Diatype'; src:url('fonts/ABCDiatype-Bold.otf') format('opentype'); font-weight:700 900; font-display:swap;}
+  @font-face{font-family:'ABC Diatype Mono'; src:url('fonts/ABCDiatypeMono-Variable.ttf') format('truetype-variations'); font-weight:100 900; font-display:swap;}
   html,body{margin:0;padding:0}
   body{background:#f4f4f2;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  h1{font-family:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;}
   ::selection{background:#151310;color:#e6e6e6}
   html{scroll-behavior:smooth}
   a{color:#151310;text-decoration:none; transition:color .18s ease}
   a:hover{color:#5a5a5a}
   a:focus-visible,button:focus-visible{outline:2px solid var(--rh-yellow); outline-offset:3px; border-radius:3px;}
   :root{ --rh-yellow:#EDE94D; }
-  .rh-pill{padding:10px 18px; border-radius:999px; background:var(--rh-yellow); color:#151310 !important; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; display:inline-flex; align-items:center; transition:transform .15s ease, filter .15s ease;}
+  .rh-pill{padding:10px 18px; border-radius:999px; background:var(--rh-yellow); color:#151310 !important; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; display:inline-flex; align-items:center; transition:transform .15s ease, filter .15s ease;}
   .rh-pill:hover{color:#151310 !important; transform:translateY(-1px); filter:brightness(1.05);}
   .rh-parallax{will-change:transform;}
   .st-img{overflow:hidden; margin:0;}
@@ -38,7 +50,7 @@
 </style>
 </helmet>
 
-<div style="min-height:100vh; background:#f4f4f2; box-sizing:border-box; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; color:#151310;">
+<div style="min-height:100vh; background:#f4f4f2; box-sizing:border-box; font-family:'ABC Diatype','Helvetica Neue',Helvetica,Arial,sans-serif; color:#151310;">
 
   <!-- ============ HEADER (shared component) ============ -->
   <div class="rh-header-slot" data-current="story"></div>
@@ -79,13 +91,13 @@
             <img src="realhands-wordmark.png" alt="realhands" style="height:20px; width:auto; display:block;">
           </div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:11px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
+        <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
           <span style="color:#9a9a9a;">Contact</span>
           <a href="#">hello@realhands.co</a>
           <a href="https://instagram.com/madebyrealhands" target="_blank" rel="noopener">Instagram</a>
         </div>
       </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-top:40px; padding-top:18px; border-top:1px solid rgba(0,0,0,.14); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#6f6f6f; flex-wrap:wrap;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-top:40px; padding-top:18px; border-top:1px solid rgba(0,0,0,.14); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#6f6f6f; flex-wrap:wrap;">
         <span>© 2026 realhands</span>
         <span>Handcrafted · 100% Stainless Steel</span>
       </div>
