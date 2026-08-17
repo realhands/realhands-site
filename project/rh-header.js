@@ -62,13 +62,13 @@
     var shopCls = 'rhh__pill' + (current === 'shop' ? ' rhh__pill--current' : '');
     slot.innerHTML =
       '<header class="rhh">' +
-        '<a href="RealHands.dc.html" class="rhh__logo" aria-label="realhands home">' +
-          '<img src="realhands-mark.png" alt="realhands mark">' +
-          '<img src="realhands-wordmark.png" class="wordmark" alt="realhands">' +
+        '<a href="/" class="rhh__logo" aria-label="realhands home">' +
+          '<img src="/project/realhands-mark.png" alt="realhands mark">' +
+          '<img src="/project/realhands-wordmark.png" class="wordmark" alt="realhands">' +
         '</a>' +
         '<nav class="rhh__nav">' +
-          '<a href="Story.dc.html"' + storyCls + '>Story</a>' +
-          '<a href="Shop.dc.html" class="' + shopCls + '">Shop</a>' +
+          '<a href="/project/Story.dc.html"' + storyCls + '>Story</a>' +
+          '<a href="/project/Shop.dc.html" class="' + shopCls + '">Shop</a>' +
         '</nav>' +
       '</header>';
     slot.setAttribute('data-rh-mounted', '1');
