@@ -15,7 +15,7 @@
     '.rh-header-slot .rhh a{color:#151310; text-decoration:none; transition:color .18s ease;}',
     '.rh-header-slot .rhh a:hover{color:#5a5a5a;}',
     '.rh-header-slot .rhh__logo{display:flex; align-items:center; gap:13px;}',
-    '.rh-header-slot .rhh__logo img{display:block; height:32px; width:auto;}',
+    '.rh-header-slot .rhh__logo img{display:block; height:32px; width:auto; filter:brightness(0);}',
     '.rh-header-slot .rhh__logo img.wordmark{height:19px;}',
     ".rh-header-slot .rhh__nav{display:flex; align-items:center; gap:clamp(16px,2vw,26px); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase;}",
     '.rh-header-slot .rhh__pill{padding:10px 18px; border-radius:999px; background:var(--rh-yellow,#EDE94D); color:#151310 !important; font-weight:600; display:inline-flex; align-items:center; transition:transform .15s ease, filter .15s ease;}',
