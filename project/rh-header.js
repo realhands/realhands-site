@@ -67,8 +67,8 @@
           '<img src="/project/realhands-wordmark.png" class="wordmark" alt="realhands">' +
         '</a>' +
         '<nav class="rhh__nav">' +
-          '<a href="/Story.html"' + storyCls + '>Story</a>' +
-          '<a href="/Shop.html" class="' + shopCls + '">Shop</a>' +
+          '<a href="/story.html"' + storyCls + '>Story</a>' +
+          '<a href="/shop.html" class="' + shopCls + '">Shop</a>' +
         '</nav>' +
       '</header>';
     slot.setAttribute('data-rh-mounted', '1');
