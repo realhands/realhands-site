@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./project/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="icon" type="image/png" href="project/realhands-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="./project/rh-header.js?v=8"></script>
+<script src="./project/rh-scroll.js?v=6"></script>
+<style>
+  @font-face{
+    font-family:'Archivo';
+    src:url('project/fonts/Archivo-Variable.ttf') format('truetype-variations');
+    font-weight:100 900;
+    font-display:swap;
+  }
+  @font-face{font-family:'ABC Diatype'; src:url('project/fonts/ABCDiatype-Regular.otf') format('opentype'); font-weight:400; font-display:swap;}
+  @font-face{font-family:'ABC Diatype'; src:url('project/fonts/ABCDiatype-Medium.otf') format('opentype'); font-weight:500 600; font-display:swap;}
+  @font-face{font-family:'ABC Diatype'; src:url('project/fonts/ABCDiatype-Bold.otf') format('opentype'); font-weight:700 900; font-display:swap;}
+  @font-face{font-family:'ABC Diatype Mono'; src:url('project/fonts/ABCDiatypeMono-Variable.ttf') format('truetype-variations'); font-weight:100 900; font-display:swap;}
+  html,body{margin:0;padding:0}
+  body{background:#f4f4f2;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  h1{font-family:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;}
+  ::selection{background:#151310;color:#e6e6e6}
+  html{scroll-behavior:smooth}
+  a{color:#151310;text-decoration:none; transition:color .18s ease}
+  a:hover{color:#5a5a5a}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--rh-yellow); outline-offset:3px; border-radius:3px;}
+  :root{ --rh-yellow:#EDE94D; }
+  .rh-pill{padding:10px 18px; border-radius:999px; background:var(--rh-yellow); color:#151310 !important; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; display:inline-flex; align-items:center; transition:transform .15s ease, filter .15s ease;}
+  .rh-pill:hover{color:#151310 !important; transform:translateY(-1px); filter:brightness(1.05);}
+  .rh-parallax{will-change:transform;}
+  .st-img{overflow:hidden; margin:0;}
+  .st-img img{width:100%; height:clamp(340px,44vw,600px); object-fit:cover; display:block; transform:scale(1.18); will-change:transform;}
+  .st-p{max-width:68ch; margin:0; font-size:15px; line-height:1.7; color:#3a3a3a;}
+  .rh-page-pad{width:100%; padding:0 40px 60px; box-sizing:border-box;}
+  @media (max-width:640px){ .rh-page-pad{padding:0 16px 60px;} }
+  .st-p--full{max-width:none;}
+  .st-split{display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,48px); align-items:start;}
+  .st-split .st-img img{height:100%; min-height:420px;}
+  .st-split__text{display:flex; flex-direction:column; gap:22px;}
+  @media (max-width:820px){ .st-split{grid-template-columns:1fr;} .st-split .st-img img{min-height:0; height:clamp(300px,60vw,420px);} }
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#f4f4f2; box-sizing:border-box; font-family:'ABC Diatype','Helvetica Neue',Helvetica,Arial,sans-serif; color:#151310;">
+
+  <!-- ============ HEADER (shared component) ============ -->
+  <div class="rh-header-slot" data-current="story"></div>
+
+  <div class="rh-page-pad">
+
+    <!-- ============ HERO / TITLE + BODY COPY + PHOTOS ============ -->
+    <section style="margin-top:40px; padding:8px 0; display:flex; flex-direction:column; gap:clamp(30px,4vw,50px);">
+      <div class="st-split">
+        <div class="st-split__text">
+          <h1 style="margin:0; font-size:clamp(20px,2.5vw,34px); color:#151310; font-weight:800; letter-spacing:-.02em; line-height:1.35;">Made with precision.<br>Made to last.<br>Made for music.</h1>
+          <p class="st-p">realhands was born from a simple belief: the objects we interact with while listening to music should be as thoughtfully crafted as the music itself. Born between Beirut and Paris, realhands brings together decades of family craftsmanship, precision machining, and a shared passion for music. Behind every piece is a family workshop with more than 30 years of experience in stainless steel craftsmanship, creating objects that unite technical excellence, enduring quality, and timeless design.</p>
+        </div>
+        <figure class="st-img">
+          <img src="project/workshop-1.jpg" alt="Family workshop, stainless steel craftsmanship" class="rh-parallax" data-parallax="0.12" data-parallax-scale="1.18">
+        </figure>
+      </div>
+
+      <div class="st-split">
+        <figure class="st-img">
+          <img src="project/workshop-2.jpg" alt="Workshop bench and tools" class="rh-parallax" data-parallax="0.16" data-parallax-scale="1.18">
+        </figure>
+        <div class="st-split__text">
+          <p class="st-p">Every realhands record stabilizer is machined from solid stainless steel with meticulous attention to detail. We chose stainless steel not only for its elegance, but for its exceptional properties. Naturally corrosion-resistant, highly durable, and infinitely recyclable, it retains its beauty and structural integrity for decades. Its reassuring weight, smooth tactile feel, and exceptional resistance to wear make it the ideal material for an object designed to be handled every day and cherished for a lifetime.</p>
+          <p class="st-p">We believe that vinyl is more than a format; it is a ritual. Lowering the needle, selecting a record, holding a beautifully crafted object in your hand—these moments deserve products that feel substantial, authentic, and built to last.</p>
+          <p class="st-p">Rather than chasing trends or mass production, we focus on creating small batches with uncompromising quality. Every curve, finish, and surface is refined to provide a tactile experience that complements the act of listening.</p>
+          <p class="st-p">realhands is for music lovers, collectors, DJs, and anyone who values craftsmanship as much as sound.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer style="margin-top:70px; padding-top:34px; border-top:1px solid rgba(0,0,0,.16);">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:32px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <img src="project/realhands-mark.png" alt="realhands mark" style="height:34px; width:auto; display:block;">
+            <img src="project/realhands-wordmark.png" alt="realhands" style="height:20px; width:auto; display:block;">
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
+          <span style="color:#9a9a9a;">Contact</span>
+          <a href="#">hello@realhands.co</a>
+          <a href="https://instagram.com/madebyrealhands" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-top:40px; padding-top:18px; border-top:1px solid rgba(0,0,0,.14); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#6f6f6f; flex-wrap:wrap;">
+        <span>© 2026 realhands</span>
+        <span>Handcrafted · 100% Stainless Steel</span>
+      </div>
+    </footer>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1240, &quot;height&quot;: 1900 }
+}">
+class Component extends DCLogic {
+  componentDidMount() {
+    this.setupParallax();
+  }
+
+  componentWillUnmount() {
+    if (this._parScroll) {
+      window.removeEventListener('scroll', this._parScroll);
+      window.removeEventListener('resize', this._parScroll);
+    }
+    if (this._parRaf) cancelAnimationFrame(this._parRaf);
+  }
+
+  setupParallax() {
+    if (this._parScroll) {
+      window.removeEventListener('scroll', this._parScroll);
+      window.removeEventListener('resize', this._parScroll);
+    }
+    if (this._parRaf) cancelAnimationFrame(this._parRaf);
+    this._parRaf = null;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const items = Array.prototype.slice.call(document.querySelectorAll('[data-parallax]')).map((el) => ({
+      el: el,
+      frame: el.parentElement,
+      speed: parseFloat(el.getAttribute('data-parallax')) || 0.1,
+      scale: parseFloat(el.getAttribute('data-parallax-scale')) || 1.2,
+    }));
+    if (!items.length) return;
+
+    const update = () => {
+      this._parRaf = null;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        const r = it.frame.getBoundingClientRect();
+        const dist = (r.top + r.height / 2) - vh / 2;
+        const head = ((it.scale - 1) / 2) * r.height;
+        let y = -dist * it.speed;
+        if (y > head) y = head; else if (y < -head) y = -head;
+        it.el.style.transform = 'translate3d(0,' + y.toFixed(1) + 'px,0) scale(' + it.scale + ')';
+      }
+    };
+    const onScroll = () => { if (this._parRaf == null) this._parRaf = requestAnimationFrame(update); };
+    this._parScroll = onScroll;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  }
+}
+</script>
+</body>
+</html>
