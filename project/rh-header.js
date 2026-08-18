@@ -11,7 +11,7 @@
     '.rh-header-slot.rhh--hidden{opacity:0; pointer-events:none;}',
     /* hidden must beat the scroll-linked hero fade (animations override class opacity) */
     '.rh-header-slot[data-theme="light"].rhh--hidden{animation:none;}',
-    '.rh-header-slot .rhh{display:flex; justify-content:space-between; align-items:center; gap:24px; padding:40px 40px 0; transition:padding .3s ease;}',
+    '.rh-header-slot .rhh{display:flex; justify-content:space-between; align-items:center; gap:clamp(12px,4vw,24px); padding:40px 40px 0; transition:padding .3s ease;}',
     '.rh-header-slot .rhh a{color:#151310; text-decoration:none; transition:color .18s ease;}',
     '.rh-header-slot .rhh a:hover{color:#5a5a5a;}',
     '.rh-header-slot .rhh__logo{display:flex; align-items:center; gap:13px;}',
@@ -41,10 +41,26 @@
     'html.rh-dark-zone .rh-header-slot .rhh a:hover{color:var(--rh-yellow,#EDE94D);}',
     'html.rh-dark-zone .rh-header-slot .rhh__logo img{filter:brightness(0) invert(1);}',
     'html.rh-dark-zone .rh-header-slot .rhh a.rhh__pill{color:#151310 !important;}',
+    /* every inset is a max(), so the notch can only ever widen the rail,
+       never narrow it. Inert until the page sets viewport-fit=cover. */
     '@media (max-width:640px){',
-    '  .rh-header-slot .rhh{padding:40px 16px 0;}',
-    '  .rh-header-slot.rhh--scrolled:not([data-theme="light"]) .rhh{padding:14px 16px;}',
-    '  .rh-header-slot[data-theme="light"].rhh--past-hero .rhh{padding:14px 16px;}',
+    '  .rh-header-slot .rhh{padding:max(40px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));}',
+    '  .rh-header-slot.rhh--scrolled:not([data-theme="light"]) .rhh{padding:max(14px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 14px max(16px, env(safe-area-inset-left));}',
+    '  .rh-header-slot[data-theme="light"].rhh--past-hero .rhh{padding:max(14px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 14px max(16px, env(safe-area-inset-left));}',
+    '}',
+    /* at 320 the logo plus nav measures within a few px of the viewport */
+    '@media (max-width:400px){',
+    '  .rh-header-slot .rhh__logo{gap:10px;}',
+    '  .rh-header-slot .rhh__logo img{height:26px;}',
+    '  .rh-header-slot .rhh__logo img.wordmark{height:16px;}',
+    '  .rh-header-slot .rhh__nav{gap:14px;}',
+    '  .rh-header-slot .rhh__pill{padding:9px 14px;}',
+    '}',
+    /* touch: Story is an 11px word and the pill is 34px tall, so grow the hit
+       area with a pseudo-element instead of the box - the look is unchanged */
+    '@media (hover:none){',
+    '  .rh-header-slot .rhh__nav a{position:relative;}',
+    '  .rh-header-slot .rhh__nav a::after{content:""; position:absolute; left:0; right:0; top:50%; height:44px; transform:translateY(-50%);}',
     '}'
   ].join('\n');
 

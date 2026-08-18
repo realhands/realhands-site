@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="./rh-header.js?v=12"></script>
+<script src="./rh-header.js?v=13"></script>
 <script src="./rh-scroll.js?v=9"></script>
 <style>
   @font-face{font-family:'ABC Diatype'; src:url('fonts/ABCDiatype-Regular.otf') format('opentype'); font-weight:400; font-display:swap;}
@@ -37,11 +37,43 @@
   .rh-products{display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:start;}
   @media (max-width:900px){ .rh-products{grid-template-columns:1fr;} }
   .rh-page-pad{width:100%; padding:0 40px 60px; box-sizing:border-box;}
-  @media (max-width:640px){ .rh-page-pad{padding:0 16px 60px;} }
+  /* max() so the notch can only widen the rail, never narrow it */
+  @media (max-width:640px){ .rh-page-pad{padding:0 max(16px, env(safe-area-inset-right)) 60px max(16px, env(safe-area-inset-left));} }
+  /* A spec value like "Integrated 45 Adapter (Flip Side)" has ~130px to live
+     in once the card is 320px wide, so stack the label over the value and
+     drop the slash rather than let the row push the page sideways. */
+  @media (max-width:520px){
+    .rh-spec{grid-template-columns:1fr !important; row-gap:3px;}
+    .rh-spec > span:nth-child(2){display:none;}
+  }
+  @media (max-width:400px){ .rh-card{padding:20px 16px !important;} }
+  .rh-prod__head{display:flex; flex-direction:column; gap:10px;}
+  .rh-prod__title{margin:0; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
+    font-size:clamp(18px,2.1vw,23px); font-weight:700; letter-spacing:.01em; line-height:1.35;
+    text-transform:uppercase;}
+  /* grey marker drawn left to right on entry - same build as the yellow marker
+     on the homepage. Base state is fully drawn, so reduced motion and no-JS
+     still get the highlight; the motion-safe block below draws it. */
+  .rh-prod__title em{font-style:normal; color:#151310; padding:.08em .18em;
+    background-image:linear-gradient(#dcdbd6,#dcdbd6); background-repeat:no-repeat;
+    background-position:0 50%; background-size:100% 100%;
+    box-decoration-break:clone; -webkit-box-decoration-break:clone;}
+  .rh-prod__sub{font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
+    font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:#6f6f6f;}
+  @media (prefers-reduced-motion:no-preference){
+    .rh-prod__title em{background-size:0% 100%;
+      transition:background-size .8s cubic-bezier(.22,.75,.25,1) .15s;}
+    .rh-prod__title.in em{background-size:100% 100%;}
+  }
+  /* the arrows are hover-revealed, which never happens on a touch screen */
+  @media (hover:none){
+    .rh-carousel .rh-arrow{opacity:1; width:44px !important; height:44px !important;}
+    .rh-pill{min-height:44px;}
+  }
 </style>
 </helmet>
 
-<div style="min-height:100vh; background:#f4f4f2; box-sizing:border-box; font-family:'ABC Diatype','Helvetica Neue',Helvetica,Arial,sans-serif; color:#151310;">
+<div style="min-height:100svh; background:#f4f4f2; box-sizing:border-box; font-family:'ABC Diatype','Helvetica Neue',Helvetica,Arial,sans-serif; color:#151310;">
 
   <!-- ============ HEADER (shared component) ============ -->
   <div class="rh-header-slot" data-current="shop"></div>
@@ -53,15 +85,11 @@
       <div class="rh-products">
 
       <!-- T01 -->
-      <div style="display:flex; flex-direction:column; gap:16px; border:1.5px solid #151310; border-radius:2px; padding:24px 22px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
-          <div style="display:flex; align-items:baseline; gap:12px;">
-            <h3 style="margin:0; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1;">T01</h3>
-            <span style="font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:300; letter-spacing:-.02em; line-height:1; color:#6f6f6f;">500G</span>
-          </div>
-          <span style="font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1; color:#151310;">€150</span>
+      <div class="rh-card" style="display:flex; flex-direction:column; gap:16px; border:1.5px solid #151310; border-radius:2px; padding:24px 22px;">
+        <div class="rh-prod__head">
+          <h3 class="rh-prod__title rh-reveal"><em>The Everyday Companion</em></h3>
+          <div class="rh-prod__sub">500G</div>
         </div>
-        <span style="display:inline-block; align-self:flex-start; background:#dcdbd6; color:#151310; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; padding:6px 10px; border-radius:5px;">The Everyday Companion</span>
         <p style="margin:0; font-size:13.5px; line-height:1.55; color:#3a3a3a;">For the travelling DJ or the home listener. Double-sided — flat for 12&quot; records, built-in 45 adapter for 7&quot;. Light enough to pack two. Heavy enough to matter. Slips into any record bag, so it's always with you.</p>
         <div class="rh-carousel" style="position:relative;">
           <img src="{{ t01Photo }}" alt="T01 render" style="width:100%; height:clamp(320px,32vw,440px); object-fit:cover; border-radius:8px; display:block;">
@@ -79,30 +107,26 @@
           <div style="display:flex; flex-direction:column; gap:20px;">
             <p style="margin:0; font-size:13.5px; line-height:1.6; color:#3a3a3a;">The T01 is built for the DJ who travels and the listener who doesn't want to think twice. Double-sided: the flat face works on 12&Prime; records; flip it and the integrated 45 adapter handles 7&Prime; singles. At 500g it's substantial enough to stabilize the record, reduce vibration feedback, and flatten mild warps — without being a burden to carry. Pack two in your bag and forget about them until you need them.</p>
             <div style="display:flex; flex-direction:column;">
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Model</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>T01</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Mass</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>500 g ±2 g</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Material</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Stainless Steel 316L</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Finish</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Brushed / Lathe-Turned</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Profile</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Flat, Stepped Rim</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">7&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Integrated 45 Adapter (Flip Side)</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">12&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Flat Side, Standard Spindle</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); border-bottom:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Portability</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Packable — Fits Two Easily</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Model</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>T01</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Mass</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>500 g ±2 g</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Material</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Stainless Steel 316L</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Finish</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Brushed / Lathe-Turned</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Profile</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Flat, Stepped Rim</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">7&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Integrated 45 Adapter (Flip Side)</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">12&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Flat Side, Standard Spindle</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); border-bottom:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Portability</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Packable — Fits Two Easily</span></div>
             </div>
           </div>
         </div>
-        <div style="padding-top:6px;"><a href="mailto:hello@realhands.co?subject=Order%20-%20T01%20500G&body=Hello%2C%0A%0AI%20would%20like%20to%20place%20an%20order%20for%20the%20realhands%20T01%20(500G)%20record%20weight.%0A%0AQuantity%3A%0AFull%20name%3A%0AFull%20Shipping%20address%3A%0ACountry%3A%0APhone%20number%3A%0A%0AThank%20you!" class="rh-pill">Order</a></div>
+        <div style="padding-top:6px; display:flex; align-items:center; justify-content:space-between; gap:16px;"><a href="mailto:hello@realhands.co?subject=Order%20-%20T01%20500G&body=Hello%2C%0A%0AI%20would%20like%20to%20place%20an%20order%20for%20the%20realhands%20T01%20(500G)%20record%20weight.%0A%0AQuantity%3A%0AFull%20name%3A%0AFull%20Shipping%20address%3A%0ACountry%3A%0APhone%20number%3A%0A%0AThank%20you!" class="rh-pill">Order</a><span style="font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1; color:#151310;">€150</span></div>
       </div>
 
       <!-- T02 -->
-      <div style="display:flex; flex-direction:column; gap:16px; border:1.5px solid #151310; border-radius:2px; padding:24px 22px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
-          <div style="display:flex; align-items:baseline; gap:12px;">
-            <h3 style="margin:0; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1;">T02</h3>
-            <span style="font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:300; letter-spacing:-.02em; line-height:1; color:#6f6f6f;">800G</span>
-          </div>
-          <span style="font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1; color:#151310;">€250</span>
+      <div class="rh-card" style="display:flex; flex-direction:column; gap:16px; border:1.5px solid #151310; border-radius:2px; padding:24px 22px;">
+        <div class="rh-prod__head">
+          <h3 class="rh-prod__title rh-reveal"><em>Audiophile Grade</em></h3>
+          <div class="rh-prod__sub">800G</div>
         </div>
-        <span style="display:inline-block; align-self:flex-start; background:#dcdbd6; color:#151310; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; padding:6px 10px; border-radius:5px;">Audiophile Grade</span>
         <p style="margin:0; font-size:13.5px; line-height:1.55; color:#3a3a3a;">More mass, more control. Includes a retractable 45 adapter, that means it handles both 12&quot; and 7&quot; records without compromise. Built for setups that demand the most from every groove.</p>
         <div class="rh-carousel" style="position:relative;">
           <img src="{{ t02Photo }}" alt="T02 render" style="width:100%; height:clamp(320px,32vw,440px); object-fit:cover; border-radius:8px; display:block;">
@@ -120,18 +144,18 @@
           <div style="display:flex; flex-direction:column; gap:20px;">
             <p style="margin:0; font-size:13.5px; line-height:1.6; color:#3a3a3a;">The T02 is for the setup that deserves more. At 800g it brings serious mass to the platter — pressing the record flat, damping resonance, and pulling the groove into tighter contact with the stylus. A retractable 45 adapter washer means it handles both 12&Prime; and 7&Prime; records in place, without flipping or swapping anything. The dome profile shifts the weight distribution and makes it easier to grip and place precisely.</p>
             <div style="display:flex; flex-direction:column;">
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Model</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>T02</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Mass</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>800 g ±2 g</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Material</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Stainless Steel 316L</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Finish</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Brushed / Lathe-Turned</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Profile</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Dome Top, Multi-Layer Base</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">7&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Retractable 45 Adapter Washer</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">12&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Standard Spindle, Direct</span></div>
-              <div style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); border-bottom:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Spindle Lock</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>3× Hex Grub Screws</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Model</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>T02</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Mass</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>800 g ±2 g</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Material</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Stainless Steel 316L</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Finish</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Brushed / Lathe-Turned</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Profile</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Dome Top, Multi-Layer Base</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">7&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Retractable 45 Adapter Washer</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">12&Prime; Use</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>Standard Spindle, Direct</span></div>
+              <div class="rh-spec" style="display:grid; grid-template-columns:100px 1fr auto; align-items:center; padding:9px 0; border-top:1px solid rgba(0,0,0,.16); border-bottom:1px solid rgba(0,0,0,.16); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;"><span style="color:#6f6f6f;">Spindle Lock</span><span style="justify-self:end; padding-right:12px; color:#a3a3a3;">/</span><span>3× Hex Grub Screws</span></div>
             </div>
           </div>
         </div>
-        <div style="padding-top:6px;"><a href="mailto:hello@realhands.co?subject=Order%20-%20T02%20800G&body=Hello%2C%0A%0AI%20would%20like%20to%20place%20an%20order%20for%20the%20realhands%20T02%20(800G)%20record%20weight.%0A%0AQuantity%3A%0AFull%20name%3A%0AFull%20Shipping%20address%3A%0ACountry%3A%0APhone%20number%3A%0A%0AThank%20you!" class="rh-pill">Order</a></div>
+        <div style="padding-top:6px; display:flex; align-items:center; justify-content:space-between; gap:16px;"><a href="mailto:hello@realhands.co?subject=Order%20-%20T02%20800G&body=Hello%2C%0A%0AI%20would%20like%20to%20place%20an%20order%20for%20the%20realhands%20T02%20(800G)%20record%20weight.%0A%0AQuantity%3A%0AFull%20name%3A%0AFull%20Shipping%20address%3A%0ACountry%3A%0APhone%20number%3A%0A%0AThank%20you!" class="rh-pill">Order</a><span style="font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:clamp(22px,2.6vw,25px); font-weight:700; letter-spacing:-.03em; line-height:1; color:#151310;">€250</span></div>
       </div>
 
       </div>
@@ -162,6 +186,7 @@ class Component extends DCLogic {
   t02Images = ['t02-render.png', 't02-carousel-2.png', 't02-carousel-3.png', 't02-carousel-4.png'];
 
   componentDidMount() {
+    this.setupReveal();
     clearInterval(this._t01Timer);
     clearInterval(this._t02Timer);
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -181,6 +206,25 @@ class Component extends DCLogic {
   componentWillUnmount() {
     clearInterval(this._t01Timer);
     clearInterval(this._t02Timer);
+    if (this._revealObs) this._revealObs.disconnect();
+  }
+
+  /* Draws the grey marker behind each product name as the card arrives. Same
+     one-shot observer the homepage uses; the carousel's setState re-render
+     leaves the class alone because className never changes between renders. */
+  setupReveal() {
+    if (this._revealObs) this._revealObs.disconnect();
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.25 });
+    const els = document.querySelectorAll('.rh-reveal:not(.in)');
+    for (let i = 0; i < els.length; i++) obs.observe(els[i]);
+    this._revealObs = obs;
   }
 
   renderVals() {
