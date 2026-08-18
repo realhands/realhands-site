@@ -29,7 +29,7 @@
   html,body{margin:0;padding:0}
   body{background:#f4f4f2;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   /* Archivo carries the display voice; everything else is ABC Diatype (text + mono) */
-  .rh-hero__title, .rh-stagger, .rh-life__title, .rh-story__lead, .rh-def__title, .rh-swirl__line{font-family:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;}
+  .rh-hero__title, .rh-stagger, .rh-life__title, .rh-story__head, .rh-def__title, .rh-swirl__line{font-family:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;}
   ::selection{background:#151310;color:#e6e6e6}
   html{scroll-behavior:smooth}
   a{color:#151310;text-decoration:none; transition:color .18s ease}
@@ -120,13 +120,23 @@
 
   /* ---- THE STORY: first curtain block after the hero (full-viewport scene) ---- */
   .rh-story{background:#f4f4f2; padding:0; min-height:100svh; display:flex; align-items:center;}
-  .rh-story__inner{width:100%; padding:0 0 0 40px; box-sizing:border-box; display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,64px); align-items:center;}
-  .rh-story__text{display:flex; flex-direction:column; gap:22px; padding:clamp(56px,8vw,110px) 0;}
-  .rh-story__lead{margin:0; font-size:var(--rh-title); font-weight:700; letter-spacing:-.02em; line-height:1.25;}
-  .rh-story__p{margin:0; max-width:62ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
+  .rh-story__inner{width:100%; padding:0 40px; box-sizing:border-box;}
+  /* the name runs the full rail, and the photograph rises behind it */
+  .rh-story__head{margin:0; position:relative; z-index:2; font-weight:800;
+    letter-spacing:-.035em; line-height:.95; font-size:clamp(38px,10vw,168px);}
+  .rh-story__head em{font-style:normal; color:#6f6f6b;}
+  .rh-story__body{position:relative; z-index:1; display:grid;
+    grid-template-columns:1fr minmax(0,42%); gap:clamp(24px,4vw,64px); align-items:start;}
+  /* the copy sits low and inset, so the eye travels name, mark, sentence */
+  .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;
+    padding-top:clamp(36px,9vh,110px); padding-left:clamp(0px,24vw,340px);}
+  .rh-story__mark{display:block; width:clamp(42px,4.2vw,62px); height:auto;}
+  .rh-story__p{margin:0; max-width:34ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
   .rh-story__link{margin-top:6px; align-self:flex-start;}
-  .rh-story__img{overflow:hidden; margin:30px;}
-  .rh-story__img img{width:100%; height:calc(100svh - 60px); object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
+  /* only the foot of the lettering crosses the photograph, so the grey run
+     stays legible against it */
+  .rh-story__img{overflow:hidden; margin:0; margin-top:clamp(-56px,-1.8vw,-16px);}
+  .rh-story__img img{width:100%; height:clamp(300px,54svh,620px); object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
 
   /* ---- SECTION 3: waves + staggered headline ----
      Starts cream like its neighbours and turns dark once it owns the screen,
@@ -333,8 +343,10 @@
     /* panels are absolutely stacked, so this min-height IS the container's
        height - it only has to clear the tallest panel, not guess high */
     .rh-defs__panels{min-height:clamp(112px,17svh,164px);}
-    .rh-story__inner{grid-template-columns:1fr;}
-    .rh-story__img img{height:clamp(280px,55vw,420px);}
+    .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
+    .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px);}
+    .rh-story__text{padding-top:0; padding-left:0;}
+    .rh-story__img img{height:clamp(280px,46svh,420px);}
   }
   /* mobile: 16px side margins everywhere, widening to clear the notch in landscape */
   @media (max-width:640px){
@@ -344,7 +356,7 @@
     /* the rail comes from the text block and the image's own margin, so both
        sides stay equal instead of doubling up on the left */
     .rh-story__inner{padding-left:0; padding-right:0;}
-    .rh-story__text{padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
+    .rh-story__head, .rh-story__text{padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
     .rh-story__img{margin:16px;}
     .rh-hero__eyebrow{left:max(16px, env(safe-area-inset-left)); right:max(16px, env(safe-area-inset-right));
       max-width:none; font-size:13px; line-height:1.45;}
@@ -489,14 +501,17 @@
   <!-- ============ SECTION 4 - THE STORY (closing block) ============ -->
   <section class="rh-story">
     <div class="rh-story__inner">
-      <div class="rh-story__text rh-reveal">
-        <p class="rh-story__lead">Made by real hands.</p>
-        <p class="rh-story__p">Born between Beirut and Paris, each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
-        <a href="Story.dc.html" class="rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
+      <h2 class="rh-story__head rh-reveal">Made by <em>real hands</em></h2>
+      <div class="rh-story__body">
+        <div class="rh-story__text rh-reveal">
+          <img class="rh-story__mark" src="realhands-mark.png" alt="" aria-hidden="true">
+          <p class="rh-story__p">Born between Beirut and Paris, each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
+          <a href="Story.dc.html" class="rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <figure class="rh-story__img rh-reveal">
+          <img src="workshop-1.jpg" alt="The family workshop, stainless steel shaped by hand" class="rh-parallax" data-parallax="0.12" data-parallax-scale="1.18">
+        </figure>
       </div>
-      <figure class="rh-story__img rh-reveal">
-        <img src="workshop-1.jpg" alt="The family workshop, stainless steel shaped by hand" class="rh-parallax" data-parallax="0.12" data-parallax-scale="1.18">
-      </figure>
     </div>
   </section>
 
