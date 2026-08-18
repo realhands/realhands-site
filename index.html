@@ -101,11 +101,16 @@
     letter-spacing:-.035em; line-height:.95; font-size:clamp(28px,6vw,100px);}
   .rh-story__head em{font-style:normal; color:inherit;}
   .rh-story__body{position:relative; z-index:1; display:grid;
-    grid-template-columns:1fr minmax(0,48.5%); gap:clamp(24px,4vw,64px); align-items:start;}
+    grid-template-columns:1fr minmax(0,43.6%); gap:clamp(24px,4vw,64px); align-items:start;}
   /* the copy sits low and inset, so the eye travels name, mark, sentence */
   .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;
     padding-top:clamp(50px,12.6vh,154px); padding-left:0;}
   .rh-story__mark{display:block; width:clamp(34px,3.4vw,50px); height:auto;}
+  /* the name, mark and sentence move right together so they stay on one rail,
+     far enough that the name crosses the photograph's left edge */
+  @media (min-width:821px){
+    .rh-story__head, .rh-story__text{padding-left:clamp(0px,5.5vw,90px);}
+  }
   .rh-story__p{margin:0; max-width:34ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
   .rh-story__warranty{margin:0; max-width:34ch; font-size:13.5px; line-height:1.65; color:#3a3a3a;}
   .rh-story__warranty strong{font-weight:700; color:#151310;}
@@ -120,7 +125,7 @@
      what gives, not the width - a 7:10 portrait held to 80svh would be far
      too narrow to meet the name. */
   .rh-story__img{overflow:hidden; margin:0; margin-top:clamp(-70px,-2.4vw,-20px);
-    width:100%; height:80svh;}
+    width:100%; height:92svh;}
   .rh-story__img img{width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
 
   /* ---- SECTION 3: waves + staggered headline ----
