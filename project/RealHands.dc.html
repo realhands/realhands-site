@@ -67,9 +67,6 @@
   .rh-wrap{position:relative; z-index:6;}
   /* section 2 pins and section 3 slides over it, same as the hero.
      Desktop only: on narrow screens the stacked story can exceed one screen. */
-  @media (min-width:821px){
-    .rh-story{position:sticky; top:0; height:100svh;}
-  }
   .rh-hero__video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;}
   .rh-hero__scrim{position:absolute; inset:0; z-index:1; pointer-events:none;
     background:linear-gradient(180deg, rgba(11,10,8,.6) 0%, rgba(11,10,8,.12) 22%, rgba(11,10,8,0) 48%, rgba(11,10,8,.34) 72%, rgba(11,10,8,.84) 100%);}
@@ -100,14 +97,14 @@
   .rh-story{background:#f4f4f2; padding:0; min-height:100svh; display:flex; align-items:center; overflow:hidden;}
   .rh-story__inner{width:100%; padding:0 40px; box-sizing:border-box;}
   /* the name runs the full rail, and the photograph rises behind it */
-  .rh-story__head{margin:0; position:relative; z-index:2; font-weight:800;
-    letter-spacing:-.035em; line-height:.95; font-size:clamp(30px,6vw,100px);}
+  .rh-story__head{margin:0; position:relative; z-index:2; font-weight:700;
+    letter-spacing:-.035em; line-height:.95; font-size:clamp(24px,4.8vw,80px);}
   .rh-story__head em{font-style:normal; color:inherit;}
   .rh-story__body{position:relative; z-index:1; display:grid;
-    grid-template-columns:1fr minmax(0,34%); gap:clamp(24px,4vw,64px); align-items:start;}
+    grid-template-columns:1fr minmax(0,64%); gap:clamp(24px,4vw,64px); align-items:start;}
   /* the copy sits low and inset, so the eye travels name, mark, sentence */
   .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;
-    padding-top:clamp(36px,9vh,110px); padding-left:clamp(0px,24vw,340px);}
+    padding-top:clamp(36px,9vh,110px); padding-left:clamp(0px,7vw,100px);}
   .rh-story__mark{display:block; width:clamp(34px,3.4vw,50px); height:auto;}
   .rh-story__p{margin:0; max-width:34ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
   .rh-story__warranty{margin:0; max-width:34ch; font-size:13.5px; line-height:1.65; color:#3a3a3a;
@@ -116,8 +113,11 @@
   .rh-story__link{margin-top:6px; align-self:flex-start;}
   /* only the foot of the lettering crosses the photograph, so the grey run
      stays legible against it */
-  .rh-story__img{overflow:hidden; margin:0; margin-top:clamp(-56px,-1.8vw,-16px);
-    aspect-ratio:3/4; max-height:62svh;}
+  /* Width-driven, so the photograph fills its column and reaches back under
+     the name. A portrait that wide is taller than one screen, which is fine
+     now the block no longer pins - the section simply scrolls. */
+  .rh-story__img{overflow:hidden; margin:0; margin-top:clamp(-90px,-3.6vw,-30px);
+    aspect-ratio:3/4;}
   .rh-story__img img{width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
 
   /* ---- SECTION 3: waves + staggered headline ----
@@ -246,9 +246,9 @@
        driven by scroll position, so the whole thing holds still the moment
        the reader stops moving. */
     .rh-story__mark{transform-origin:50% 50%; will-change:transform;
-      transform:translateX(calc((1 - var(--rh-in-mark)) * 24vw))
-                rotate(calc((1 - var(--rh-in-mark)) * 1080deg))
-                scale(calc(1 + (1 - var(--rh-in-mark)) * 6));}
+      transform:translateX(calc((1 - var(--rh-in-mark)) * 10vw))
+                rotate(calc((1 - var(--rh-in-mark)) * 720deg))
+                scale(calc(1 + (1 - var(--rh-in-mark)) * 2.6));}
     .rh-story__img{opacity:var(--rh-in-img); will-change:transform;
       transform:translateX(calc((1 - var(--rh-in-img)) * 46vw));}
     .rh-story__head, .rh-story__p, .rh-story__warranty, .rh-story__link{
@@ -498,7 +498,7 @@
         <div class="rh-story__text">
           <img class="rh-story__mark" src="realhands-mark.png" alt="" aria-hidden="true">
           <p class="rh-story__p">Born between Beirut and Paris, each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
-          <p class="rh-story__warranty"><strong>Guaranteed for life.</strong> Buy one weight, once. If it ever fails, we repair it or replace it.</p>
+          <p class="rh-story__warranty"><strong>Guaranteed for life.</strong> Buy one weight, once.</p>
           <a href="Story.dc.html" class="rh-glass rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
         </div>
         <figure class="rh-story__img">
@@ -623,8 +623,8 @@ class Component extends DCLogic {
       if (vh < 1) return;
       const p = Math.max(0, Math.min(1, 1 - el.getBoundingClientRect().top / vh));
       el.style.setProperty('--rh-in-mark', ease(seg(p, 0.00, 0.72)).toFixed(4));
-      el.style.setProperty('--rh-in-img',  ease(seg(p, 0.18, 0.92)).toFixed(4));
-      el.style.setProperty('--rh-in-text', ease(seg(p, 0.38, 1.00)).toFixed(4));
+      el.style.setProperty('--rh-in-img',  ease(seg(p, 0.24, 0.92)).toFixed(4));
+      el.style.setProperty('--rh-in-text', ease(seg(p, 0.44, 1.00)).toFixed(4));
     };
 
     const onScroll = () => { if (this._introRaf == null) this._introRaf = requestAnimationFrame(update); };
