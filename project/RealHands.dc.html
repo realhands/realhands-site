@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="./image-slot.js"></script>
-<script src="./rh-header.js?v=13"></script>
+<script src="./rh-header.js?v=14"></script>
 <script src="./rh-scroll.js?v=9"></script>
 <style>
   @font-face{
@@ -89,8 +89,8 @@
     color:var(--rh-glass-ink) !important;
     background:var(--rh-glass-tint); border:1px solid var(--rh-glass-edge);
     -webkit-backdrop-filter:blur(30px) saturate(180%); backdrop-filter:blur(30px) saturate(180%);
-    box-shadow:inset 0 1px 0 var(--rh-glass-lit), inset 0 -1px 0 var(--rh-glass-shade);
-    transition:transform .15s ease, background .18s ease, box-shadow .18s ease;}
+    box-shadow:inset 0 1px 0 var(--rh-glass-lit);
+    transition:transform .15s ease, background .18s ease;}
   .rh-hero__discover::before, .rh-story__link::before{
     content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
     background:linear-gradient(180deg, var(--rh-glass-sheen) 0%, transparent 55%);}
@@ -99,8 +99,7 @@
   .rh-hero__discover{margin-top:18px;
     --rh-glass-tint:rgba(21,19,16,.2); --rh-glass-tint-hi:rgba(21,19,16,.32);
     --rh-glass-ink:#f4f4f2; --rh-glass-edge:rgba(244,244,242,.22);
-    --rh-glass-lit:rgba(255,255,255,.45); --rh-glass-shade:rgba(0,0,0,.18);
-    --rh-glass-sheen:rgba(255,255,255,.22);}
+    --rh-glass-lit:rgba(255,255,255,.45); --rh-glass-sheen:rgba(255,255,255,.22);}
   .rh-hero__title{position:absolute; z-index:2; left:40px; right:40px; bottom:calc(clamp(18px,4vh,50px) + 20px);
     margin:0; color:var(--rh-yellow); font-weight:700; letter-spacing:-.04em; line-height:.92; font-size:clamp(30px,9.5vw,150px); text-wrap:balance;}
 
@@ -111,6 +110,8 @@
   .rh-eyebrow{display:inline-flex; align-items:center; gap:10px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#151310;}
   .rh-eyebrow::before{content:""; width:9px; height:9px; background:var(--rh-yellow); border-radius:2px; display:inline-block;}
   .rh-cta{display:inline-flex; align-items:center; gap:8px; background:var(--rh-yellow); color:#151310 !important; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; padding:13px 24px; border-radius:999px; transition:transform .15s ease, filter .15s ease;}
+  /* same lit top edge as the glass pills, so the two button families match */
+  .rh-cta{box-shadow:inset 0 1px 0 rgba(255,255,255,.75);}
   .rh-cta:hover{color:#151310 !important; transform:translateY(-1px); filter:brightness(1.05);}
   .rh-cta span{transition:transform .18s ease;}
   .rh-cta:hover span{transform:translateX(4px);}
@@ -125,8 +126,7 @@
   .rh-story__link{margin-top:6px; align-self:flex-start;
     --rh-glass-tint:rgba(21,19,16,.07); --rh-glass-tint-hi:rgba(21,19,16,.13);
     --rh-glass-ink:#151310; --rh-glass-edge:rgba(21,19,16,.14);
-    --rh-glass-lit:rgba(255,255,255,.75); --rh-glass-shade:rgba(21,19,16,.07);
-    --rh-glass-sheen:rgba(255,255,255,.5);}
+    --rh-glass-lit:rgba(255,255,255,.75); --rh-glass-sheen:rgba(255,255,255,.5);}
   .rh-story__img{overflow:hidden; margin:30px;}
   .rh-story__img img{width:100%; height:calc(100svh - 60px); object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
 
