@@ -98,17 +98,16 @@
   .rh-story__inner{width:100%; padding:0 40px; box-sizing:border-box;}
   /* the name runs the full rail, and the photograph rises behind it */
   .rh-story__head{margin:0; position:relative; z-index:2; font-weight:700;
-    letter-spacing:-.035em; line-height:.95; font-size:clamp(24px,4.8vw,80px);}
+    letter-spacing:-.035em; line-height:.95; font-size:clamp(28px,6vw,100px);}
   .rh-story__head em{font-style:normal; color:inherit;}
   .rh-story__body{position:relative; z-index:1; display:grid;
-    grid-template-columns:1fr minmax(0,64%); gap:clamp(24px,4vw,64px); align-items:start;}
+    grid-template-columns:1fr minmax(0,48.5%); gap:clamp(24px,4vw,64px); align-items:start;}
   /* the copy sits low and inset, so the eye travels name, mark, sentence */
   .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;
-    padding-top:clamp(36px,9vh,110px); padding-left:clamp(0px,7vw,100px);}
+    padding-top:clamp(50px,12.6vh,154px); padding-left:0;}
   .rh-story__mark{display:block; width:clamp(34px,3.4vw,50px); height:auto;}
   .rh-story__p{margin:0; max-width:34ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
-  .rh-story__warranty{margin:0; max-width:34ch; font-size:13.5px; line-height:1.65; color:#3a3a3a;
-    padding-top:14px; border-top:1px solid rgba(21,19,16,.16);}
+  .rh-story__warranty{margin:0; max-width:34ch; font-size:13.5px; line-height:1.65; color:#3a3a3a;}
   .rh-story__warranty strong{font-weight:700; color:#151310;}
   .rh-story__link{margin-top:6px; align-self:flex-start;}
   /* only the foot of the lettering crosses the photograph, so the grey run
@@ -116,8 +115,12 @@
   /* Width-driven, so the photograph fills its column and reaches back under
      the name. A portrait that wide is taller than one screen, which is fine
      now the block no longer pins - the section simply scrolls. */
-  .rh-story__img{overflow:hidden; margin:0; margin-top:clamp(-90px,-3.6vw,-30px);
-    aspect-ratio:3/4;}
+  /* Width fills the column so the name still reaches across it; height is
+     capped at 80svh so the photograph never exceeds the screen. The crop is
+     what gives, not the width - a 7:10 portrait held to 80svh would be far
+     too narrow to meet the name. */
+  .rh-story__img{overflow:hidden; margin:0; margin-top:clamp(-70px,-2.4vw,-20px);
+    width:100%; height:80svh;}
   .rh-story__img img{width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
 
   /* ---- SECTION 3: waves + staggered headline ----
@@ -246,9 +249,10 @@
        driven by scroll position, so the whole thing holds still the moment
        the reader stops moving. */
     .rh-story__mark{transform-origin:50% 50%; will-change:transform;
-      transform:translateX(calc((1 - var(--rh-in-mark)) * 10vw))
+      transform:translate(calc((1 - var(--rh-in-mark)) * 44vw),
+                          calc((1 - var(--rh-in-mark)) * -6vh))
                 rotate(calc((1 - var(--rh-in-mark)) * 720deg))
-                scale(calc(1 + (1 - var(--rh-in-mark)) * 2.6));}
+                scale(calc(1 + (1 - var(--rh-in-mark)) * 5.5));}
     .rh-story__img{opacity:var(--rh-in-img); will-change:transform;
       transform:translateX(calc((1 - var(--rh-in-img)) * 46vw));}
     .rh-story__head, .rh-story__p, .rh-story__warranty, .rh-story__link{
@@ -613,7 +617,18 @@ class Component extends DCLogic {
       if (!el) return;
       const vh = window.innerHeight || document.documentElement.clientHeight;
       if (vh < 1) return;
-      const p = Math.max(0, Math.min(1, 1 - el.getBoundingClientRect().top / vh));
+      /* Anchored on the mark's own layout position, not the section's top
+         edge. The mark sits well down inside the section, so a section-based
+         range ran the whole entrance below the fold, where nobody could see
+         it. offsetHeight is the untransformed height, and the parent's rect
+         is unaffected by its children's transforms, so this stays stable
+         while the mark itself is being scaled. */
+      const txt = document.querySelector('.rh-story__text');
+      const mk = document.querySelector('.rh-story__mark');
+      if (!txt || !mk) return;
+      const pad = parseFloat(getComputedStyle(txt).paddingTop) || 0;
+      const mc = txt.getBoundingClientRect().top + pad + mk.offsetHeight / 2;
+      const p = Math.max(0, Math.min(1, (vh * 0.92 - mc) / (vh * 0.60)));
       el.style.setProperty('--rh-in-mark', ease(seg(p, 0.00, 0.72)).toFixed(4));
       el.style.setProperty('--rh-in-img',  ease(seg(p, 0.24, 0.92)).toFixed(4));
       el.style.setProperty('--rh-in-text', ease(seg(p, 0.44, 1.00)).toFixed(4));
