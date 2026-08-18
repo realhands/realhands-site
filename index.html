@@ -347,7 +347,10 @@
        height - it only has to clear the tallest panel, not guess high */
     .rh-defs__panels{min-height:clamp(112px,17svh,164px);}
     .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
-    .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;}
+    /* no slide-in on the stacked layout: 46vw across a phone reads as a
+       lurch rather than an arrival, so the photograph just fades up */
+    .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;
+      transform:none;}
     .rh-story__text{padding-top:0; padding-left:0;}
     .rh-story__img img{height:clamp(280px,46svh,420px);}
   }
@@ -533,6 +536,7 @@
         <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
           <span style="color:#9a9a9a;">Contact</span>
           <a href="https://www.instagram.com/realhands.co/" target="_blank" rel="noopener">Instagram</a>
+          <a href="mailto:hello@realhands.co">Email</a>
         </div>
       </div>
     </footer>
@@ -645,12 +649,26 @@ class Component extends DCLogic {
          into view - any earlier and the opening would play below the fold.
          The floor keeps a quarter-viewport of travel even if the mark sits
          unusually deep in the section. */
-      /* Aimed at 0.38 to land at 70% visible: the applied progress chases the
-         target, so it arrives roughly 70px later than the raw geometry says,
-         and the aim is set early to absorb that. Retune this if the chase
-         factor below ever changes. */
-      const endTop = vh * 0.38;
-      const startTop = Math.max(endTop + vh * 0.25, vh - off);
+      /* Desktop framing: finish with the section 70% visible. Aimed at 0.38
+         rather than 0.30 because the applied progress chases the target and
+         arrives about 70px later than the raw geometry says. Retune if the
+         chase factor below changes. */
+      const endSec = vh * 0.38;
+      const startByMark = vh - off;   // section top when the mark reaches the bottom edge
+
+      /* Stacked layouts put the photograph above the mark, which pushes the
+         mark most of a screen down the section. There the mark only appears
+         after the section has already passed 70%, so the two conditions
+         cannot both hold and the entrance would play out of sight. Detect
+         that and anchor the whole span on the mark instead. */
+      let startTop, endTop;
+      if (startByMark > endSec + vh * 0.15) {
+        startTop = Math.max(endSec + vh * 0.25, startByMark);
+        endTop = endSec;
+      } else {
+        startTop = startByMark;
+        endTop = startByMark - vh * 0.60;
+      }
       return Math.max(0, Math.min(1, (startTop - secTop) / (startTop - endTop)));
     };
 
@@ -903,11 +921,35 @@ class Component extends DCLogic {
     document.addEventListener('click', onNavClick);
     if (fine) window.addEventListener('wheel', onWheel, { passive: false, capture: true });
     window.addEventListener('scroll', onScroll, { passive: true });
-    const el0 = this.scrubVideoEl;
+    /* Mobile needs the decoder woken up. Two things were stopping it:
+       the `muted` content attribute is not reliably reflected onto the
+       property by the renderer (it read back false), and an unmuted video is
+       refused inline playback on iOS; and this video is only ever seeked,
+       never played, so iOS never decodes a frame for it. Without a frame the
+       element falls back to its poster, and setting both here plus a muted
+       play/pause forces the first frame out. */
+    const prime = () => {
+      const el = this.scrubVideoEl || document.querySelector('.rh-defs__media video');
+      if (!el) return;
+      el.muted = true;
+      el.defaultMuted = true;
+      el.playsInline = true;
+      const settle = () => { try { el.pause(); } catch (e) {} kick(); };
+      let pr = null;
+      try { pr = el.play(); } catch (e) { pr = null; }
+      if (pr && pr.then) pr.then(settle).catch(() => { try { el.load(); } catch (e) {} kick(); });
+      else settle();
+    };
+
+    const el0 = this.scrubVideoEl || document.querySelector('.rh-defs__media video');
     if (el0) {
-      el0.pause();
       if (el0.readyState < 1) el0.addEventListener('loadedmetadata', kick, { once: true });
+      el0.addEventListener('loadeddata', kick, { once: true });
+      prime();
     }
+    /* if autoplay was refused outright, the first touch is a user gesture and
+       will let the decoder start */
+    window.addEventListener('touchstart', prime, { passive: true, once: true });
     showStep();
     kick();
   }

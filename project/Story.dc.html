@@ -50,7 +50,15 @@
   .st-split{display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,48px); align-items:start;}
   .st-split .st-img img{height:100%; min-height:420px;}
   .st-split__text{display:flex; flex-direction:column; gap:22px;}
-  @media (max-width:820px){ .st-split{grid-template-columns:1fr;} .st-split .st-img img{min-height:0; height:clamp(300px,60vw,420px);} }
+  /* Stacked, the second split leads with its photograph, so the page reads
+     text, photo, photo, text. Forcing the copy first in both splits gives
+     the alternating paragraph / photo rhythm instead. */
+  @media (max-width:820px){
+    .st-split{grid-template-columns:1fr;}
+    .st-split__text{order:1;}
+    .st-split .st-img{order:2;}
+    .st-split .st-img img{min-height:0; height:clamp(300px,60vw,420px);}
+  }
 </style>
 </helmet>
 
@@ -98,6 +106,7 @@
         <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
           <span style="color:#9a9a9a;">Contact</span>
           <a href="https://www.instagram.com/realhands.co/" target="_blank" rel="noopener">Instagram</a>
+          <a href="mailto:hello@realhands.co">Email</a>
         </div>
       </div>
       <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-top:40px; padding-top:18px; border-top:1px solid rgba(0,0,0,.14); font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:#6f6f6f; flex-wrap:wrap;">

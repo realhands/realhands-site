@@ -52,7 +52,7 @@
   @media (max-width:400px){ .rh-card{padding:20px 16px !important;} }
   .rh-prod__head{display:flex; flex-direction:column; gap:10px;}
   .rh-prod__title{margin:0; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
-    font-size:clamp(18px,2.1vw,23px); font-weight:700; letter-spacing:.01em; line-height:1.35;
+    font-size:clamp(20px,2.4vw,26px); font-weight:700; letter-spacing:.01em; line-height:1.35;
     text-transform:uppercase;}
   /* grey marker drawn left to right on entry - same build as the yellow marker
      on the homepage. Base state is fully drawn, so reduced motion and no-JS
@@ -62,7 +62,8 @@
     background-position:0 50%; background-size:100% 100%;
     box-decoration-break:clone; -webkit-box-decoration-break:clone;}
   .rh-prod__sub{font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
-    font-size:12px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:#6f6f6f;}
+    font-size:clamp(17px,2vw,22px); font-weight:300; letter-spacing:-.01em; line-height:1;
+    text-transform:uppercase; color:#6f6f6f;}
   @media (prefers-reduced-motion:no-preference){
     .rh-prod__title em{background-size:0% 100%;
       transition:background-size .8s cubic-bezier(.22,.75,.25,1) .15s;}
@@ -71,7 +72,9 @@
   /* the arrows are hover-revealed, which never happens on a touch screen */
   @media (hover:none){
     .rh-carousel .rh-arrow{opacity:1; width:44px !important; height:44px !important;}
-    .rh-pill{min-height:44px;}
+    /* grow the hit area, not the pill: min-height stretched it out of shape */
+    .rh-pill{position:relative;}
+    .rh-pill::after{content:""; position:absolute; left:0; right:0; top:50%; height:44px; transform:translateY(-50%);}
   }
 </style>
 </helmet>
@@ -174,6 +177,7 @@
         <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
           <span style="color:#9a9a9a;">Contact</span>
           <a href="https://www.instagram.com/realhands.co/" target="_blank" rel="noopener">Instagram</a>
+          <a href="mailto:hello@realhands.co">Email</a>
         </div>
       </div>
     </footer>
