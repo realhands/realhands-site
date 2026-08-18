@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="./image-slot.js"></script>
 <script src="./rh-header.js?v=14"></script>
-<script src="./rh-scroll.js?v=10"></script>
+<script src="./rh-scroll.js?v=11"></script>
 <style>
   @font-face{
     font-family:'Archivo';
@@ -78,9 +78,15 @@
      edge and shadowed bottom edge from the inset shadows, a soft drop shadow to
      lift it off the backdrop, and a specular sheen across the top half. The
      ::before sits at z-index:-1 so it lights the tint without washing the text.
-     The --rh-glass-* pair is what adapts the same build to a dark or light
-     backdrop; geometry and type come from the header's Shop pill. */
+     Both pills share one set of --rh-glass-* values, so they are the same
+     control in two places; geometry and type come from the header's Shop
+     pill. Note the heavy blur only reads as glass where there is something
+     behind it to refract - over the cream page it resolves to a near-white
+     pill, which is expected. */
   .rh-hero__discover, .rh-story__link{
+    --rh-glass-tint:rgba(255,255,255,.5); --rh-glass-tint-hi:rgba(255,255,255,.64);
+    --rh-glass-ink:#151310; --rh-glass-edge:rgba(255,255,255,.7);
+    --rh-glass-lit:rgba(255,255,255,.95); --rh-glass-sheen:rgba(255,255,255,.4);
     position:relative; isolation:isolate; overflow:hidden;
     display:inline-flex; align-items:center; gap:8px;
     font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
@@ -95,13 +101,7 @@
     content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
     background:linear-gradient(180deg, var(--rh-glass-sheen) 0%, transparent 55%);}
   .rh-hero__discover:hover, .rh-story__link:hover{transform:translateY(-1px); background:var(--rh-glass-tint-hi);}
-  /* over the hero video: frosted white glass with dark ink and a bright rim.
-     The heavy blur is what makes it read as glass rather than a flat white
-     pill, since the video behind it is always moving. */
-  .rh-hero__discover{margin-top:18px;
-    --rh-glass-tint:rgba(255,255,255,.5); --rh-glass-tint-hi:rgba(255,255,255,.64);
-    --rh-glass-ink:#151310; --rh-glass-edge:rgba(255,255,255,.7);
-    --rh-glass-lit:rgba(255,255,255,.95); --rh-glass-sheen:rgba(255,255,255,.4);}
+  .rh-hero__discover{margin-top:18px;}
   .rh-hero__title{position:absolute; z-index:2; left:40px; right:40px; bottom:calc(clamp(18px,4vh,50px) + 20px);
     margin:0; color:var(--rh-yellow); font-weight:700; letter-spacing:-.04em; line-height:.92; font-size:clamp(30px,9.5vw,150px); text-wrap:balance;}
 
@@ -124,11 +124,7 @@
   .rh-story__text{display:flex; flex-direction:column; gap:22px; padding:clamp(56px,8vw,110px) 0;}
   .rh-story__lead{margin:0; font-size:var(--rh-title); font-weight:700; letter-spacing:-.02em; line-height:1.25;}
   .rh-story__p{margin:0; max-width:62ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
-  /* on the cream page: clear glass, dark ink. Same build as the hero pill. */
-  .rh-story__link{margin-top:6px; align-self:flex-start;
-    --rh-glass-tint:rgba(21,19,16,.07); --rh-glass-tint-hi:rgba(21,19,16,.13);
-    --rh-glass-ink:#151310; --rh-glass-edge:rgba(21,19,16,.14);
-    --rh-glass-lit:rgba(255,255,255,.75); --rh-glass-sheen:rgba(255,255,255,.5);}
+  .rh-story__link{margin-top:6px; align-self:flex-start;}
   .rh-story__img{overflow:hidden; margin:30px;}
   .rh-story__img img{width:100%; height:calc(100svh - 60px); object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
 
