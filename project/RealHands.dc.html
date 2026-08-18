@@ -258,7 +258,7 @@
     .rh-story__mark{transform-origin:50% 50%;
       transform:translate(calc((1 - var(--rh-in-mark)) * 44vw),
                           calc((1 - var(--rh-in-mark)) * -6vh))
-                rotate(calc((1 - var(--rh-in-mark)) * 720deg))
+                rotate(calc((1 - var(--rh-in-mark)) * 360deg))
                 scale(calc(1 + (1 - var(--rh-in-mark)) * 5.5));}
     .rh-story__img{opacity:var(--rh-in-img); will-change:transform;
       transform:translateX(calc((1 - var(--rh-in-img)) * 46vw));}
@@ -638,14 +638,27 @@ class Component extends DCLogic {
        The span is a little over one viewport, which at this section's scroll
        weight is roughly four wheel gestures rather than one and a half. */
     const targetP = () => {
+      const sec = document.querySelector('.rh-story');
       const txt = document.querySelector('.rh-story__text');
       const mk = document.querySelector('.rh-story__mark');
-      if (!txt || !mk) return null;
+      if (!sec || !txt || !mk) return null;
       const vh = window.innerHeight || document.documentElement.clientHeight;
       if (vh < 1) return null;
+      const secTop = sec.getBoundingClientRect().top;
       const pad = parseFloat(getComputedStyle(txt).paddingTop) || 0;
       const mc = txt.getBoundingClientRect().top + pad + mk.offsetHeight / 2;
-      return Math.max(0, Math.min(1, (vh * 0.92 - mc) / (vh * 0.62)));
+      const off = mc - secTop;              // the mark's centre within the section
+      /* Finishes when the section is 80% visible, which is its top sitting a
+         fifth of the way down the screen. It starts as the mark itself comes
+         into view - any earlier and the opening would play below the fold.
+         The floor keeps a quarter-viewport of travel even if the mark sits
+         unusually deep in the section. */
+      /* 0.27 rather than 0.20: the applied progress chases the target, so it
+         arrives about a fifth of a viewport later than the raw geometry says.
+         Aiming a little early lands the finished layout at 80% visible. */
+      const endTop = vh * 0.27;
+      const startTop = Math.max(endTop + vh * 0.25, vh - off);
+      return Math.max(0, Math.min(1, (startTop - secTop) / (startTop - endTop)));
     };
 
     /* The applied progress chases the scroll-derived one instead of snapping
