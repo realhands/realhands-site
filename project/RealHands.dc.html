@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="./image-slot.js"></script>
 <script src="./rh-header.js?v=12"></script>
-<script src="./rh-scroll.js?v=6"></script>
+<script src="./rh-scroll.js?v=8"></script>
 <style>
   @font-face{
     font-family:'Archivo';
@@ -518,30 +518,37 @@ class Component extends DCLogic {
     this._scrubProg = 0;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const sec = document.querySelector('.rh-defs');
-    const panels = Array.prototype.slice.call(document.querySelectorAll('.rh-defs__panel'));
-    const last = Math.max(0, panels.length - 1);
+    /* Look the nodes up on every use. The framework re-renders and swaps the
+       DOM, and references captured at mount go stale: class toggles land on
+       detached nodes and getBoundingClientRect() reads zeros. */
+    const getSec = () => document.querySelector('.rh-defs');
+    const getPanels = () => Array.prototype.slice.call(document.querySelectorAll('.rh-defs__panel'));
+    const lastIndex = () => Math.max(0, getPanels().length - 1);
     const fine = window.matchMedia ? window.matchMedia('(pointer: fine)').matches : true;
     this._step = 0;
     let cooldownUntil = 0;
-    let released = false;      // stepped off the end: stop owning the wheel
+    let released = false;      // stepped off an end: stop owning the wheel
+    let lastY = window.scrollY || 0;   // to tell which way the page is moving
     const STEP_MS = 620;       // one point per gesture, however fast the wheel spins
 
     const showStep = () => {
+      const panels = getPanels();
       for (let i = 0; i < panels.length; i++) panels[i].classList.toggle('is-active', i === this._step);
     };
 
-    // true while the scene owns the screen (pinned, sticky child at the top)
+    // true while the scene owns the screen
     const covering = () => {
+      const sec = getSec();
       if (!sec) return false;
       const vh = window.innerHeight || document.documentElement.clientHeight;
       if (vh < 1) return false;
       const r = sec.getBoundingClientRect();
-      return r.top <= 0 && r.bottom > vh;
+      return r.top <= 2 && r.bottom > vh;   // 2px: layout lands on fractions
     };
 
     // touch has no wheel to meter, so there it stays scroll-driven
     const scrollProg = () => {
+      const sec = getSec();
       if (!sec) return 0;
       const vh = window.innerHeight || document.documentElement.clientHeight;
       if (vh < 1) return 0;
@@ -550,18 +557,22 @@ class Component extends DCLogic {
       return Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / pin));
     };
 
-    const targetProg = () => (fine ? (last ? this._step / last : 0) : scrollProg());
+    const targetProg = () => {
+      const last = lastIndex();
+      return fine ? (last ? this._step / last : 0) : scrollProg();
+    };
 
     const update = () => {
       this._scrubRaf = null;
-      const el = this.scrubVideoEl;
+      const el = this.scrubVideoEl || document.querySelector('.rh-defs__media video');
       if (!el) return;
       const t = targetProg();
       this._scrubProg += (t - this._scrubProg) * 0.18;
       if (Math.abs(t - this._scrubProg) > 0.002) this._scrubRaf = requestAnimationFrame(update);
       else this._scrubProg = t;
       if (!fine) {
-        const s = Math.max(0, Math.min(last, Math.floor(this._scrubProg * panels.length)));
+        const panels = getPanels();
+        const s = Math.max(0, Math.min(lastIndex(), Math.floor(this._scrubProg * panels.length)));
         if (s !== this._step) { this._step = s; showStep(); }
       }
       if (el.readyState >= 1 && el.duration) {
@@ -572,19 +583,26 @@ class Component extends DCLogic {
     const kick = () => { if (this._scrubRaf == null) this._scrubRaf = requestAnimationFrame(update); };
 
     /* One wheel gesture advances exactly one point. Events arriving inside the
-       cooldown are swallowed, so a fast flick cannot skip the four points.
-       Capture phase + stopPropagation keeps the page's smooth scroll out of it. */
+       cooldown are swallowed, so a fast flick cannot skip the four points. */
     const onWheel = (e) => {
       if (e.ctrlKey) return;                                   // pinch zoom
-      if (!covering()) { released = false; return; }
+      if (!covering()) return;    // rearming happens in onScroll, once fully off screen
       if (released) return;                                    // on the way out
+      const now = performance.now();
+      if (now < cooldownUntil) {
+        /* Mid-gesture: swallow. This both stops a fast flick skipping points
+           and guarantees the last point is on screen for a beat before any
+           further scroll is allowed to release the page. */
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return;
+      }
+      const last = lastIndex();
       const dir = e.deltaY > 0 ? 1 : -1;
-      if (dir > 0 && this._step >= last) { released = true; return; }
-      if (dir < 0 && this._step <= 0) { released = true; return; }
+      if (dir > 0 && this._step >= last) { released = true; window.__rhScrollLock = null; return; }
+      if (dir < 0 && this._step <= 0) { released = true; window.__rhScrollLock = null; return; }
       e.preventDefault();
       e.stopImmediatePropagation();   // keep the page smooth-scroll out of it
-      const now = performance.now();
-      if (now < cooldownUntil) return;
       cooldownUntil = now + STEP_MS;
       this._step = Math.max(0, Math.min(last, this._step + dir));
       showStep();
@@ -592,13 +610,30 @@ class Component extends DCLogic {
     };
 
     const onScroll = () => {
-      if (!covering()) {
-        released = false;
-        const vh = window.innerHeight || 1;
-        const r = sec ? sec.getBoundingClientRect() : null;
-        // arm the scene from whichever side it is approached
-        if (r && r.top > vh * 0.5 && this._step !== 0) { this._step = 0; showStep(); }
-        else if (r && r.bottom < vh * 0.5 && this._step !== last) { this._step = last; showStep(); }
+      const sec = getSec();
+      const vh0 = window.innerHeight || document.documentElement.clientHeight;
+      const y = window.scrollY || 0;
+      const goingDown = y >= lastY - 1;
+      lastY = y;
+      if (sec && vh0 > 0) {
+        const r0 = sec.getBoundingClientRect();
+        if (r0.bottom <= 0 || r0.top >= vh0) {
+          /* Fully off screen: rearm, and preset the points so the scene reads
+             forwards when approached from above and backwards from below. */
+          released = false;
+          window.__rhScrollLock = null;
+          const want = r0.top >= vh0 ? 0 : lastIndex();
+          if (this._step !== want) { this._step = want; showStep(); }
+        } else if (!released && goingDown && r0.top <= 2 && r0.bottom > vh0 * 0.5) {
+          /* Points remain and the reader is heading down, so hold the page
+             here. Handing the position to the scroll engine keeps the two
+             cooperating: a hard flick can no longer coast through without
+             firing a wheel event for the stepper to meter. Only downward, so
+             scrolling back up is never fought. */
+          window.__rhScrollLock = Math.round(r0.top + window.scrollY);
+        } else {
+          window.__rhScrollLock = null;
+        }
       }
       kick();
     };
