@@ -88,18 +88,20 @@
     padding:10px 18px; border-radius:999px;
     color:var(--rh-glass-ink) !important;
     background:var(--rh-glass-tint); border:1px solid var(--rh-glass-edge);
-    -webkit-backdrop-filter:blur(30px) saturate(180%); backdrop-filter:blur(30px) saturate(180%);
+    -webkit-backdrop-filter:blur(40px) saturate(180%); backdrop-filter:blur(40px) saturate(180%);
     box-shadow:inset 0 1px 0 var(--rh-glass-lit);
     transition:transform .15s ease, background .18s ease;}
   .rh-hero__discover::before, .rh-story__link::before{
     content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
     background:linear-gradient(180deg, var(--rh-glass-sheen) 0%, transparent 55%);}
   .rh-hero__discover:hover, .rh-story__link:hover{transform:translateY(-1px); background:var(--rh-glass-tint-hi);}
-  /* over the hero video: smoked glass, white ink */
+  /* over the hero video: frosted white glass with dark ink and a bright rim.
+     The heavy blur is what makes it read as glass rather than a flat white
+     pill, since the video behind it is always moving. */
   .rh-hero__discover{margin-top:18px;
-    --rh-glass-tint:rgba(21,19,16,.2); --rh-glass-tint-hi:rgba(21,19,16,.32);
-    --rh-glass-ink:#f4f4f2; --rh-glass-edge:rgba(244,244,242,.22);
-    --rh-glass-lit:rgba(255,255,255,.45); --rh-glass-sheen:rgba(255,255,255,.22);}
+    --rh-glass-tint:rgba(255,255,255,.5); --rh-glass-tint-hi:rgba(255,255,255,.64);
+    --rh-glass-ink:#151310; --rh-glass-edge:rgba(255,255,255,.7);
+    --rh-glass-lit:rgba(255,255,255,.95); --rh-glass-sheen:rgba(255,255,255,.4);}
   .rh-hero__title{position:absolute; z-index:2; left:40px; right:40px; bottom:calc(clamp(18px,4vh,50px) + 20px);
     margin:0; color:var(--rh-yellow); font-weight:700; letter-spacing:-.04em; line-height:.92; font-size:clamp(30px,9.5vw,150px); text-wrap:balance;}
 
