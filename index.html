@@ -221,18 +221,21 @@
   /* ---- intro + scroll-reveal (respects reduced motion) ---- */
   @media (prefers-reduced-motion:no-preference){
     @keyframes rh-in-up{from{opacity:0; transform:translateY(24px)} to{opacity:1; transform:none}}
+    /* the hero copy rises out of a soft blur, matching .rh-story__text */
+    @keyframes rh-in-blur{from{opacity:0; transform:translateY(24px); filter:blur(7px)}
+      to{opacity:1; transform:none; filter:blur(0)}}
     @keyframes rh-in-fade{from{opacity:0} to{opacity:1}}
     @keyframes rh-in-zoom{from{opacity:.45; transform:scale(1.08)} to{opacity:1; transform:scale(1)}}
     .rh-hero__video{animation:rh-in-zoom 1.6s cubic-bezier(.2,.7,.2,1) both;}
     .rh-header-slot[data-theme="light"]{animation:rh-in-fade .9s ease .15s both;}
-    .rh-hero__eyebrow{animation:rh-in-up 1s cubic-bezier(.2,.7,.2,1) .4s both;}
-    .rh-hero__title{animation:rh-in-up 1s cubic-bezier(.2,.7,.2,1) .55s both;}
+    .rh-hero__eyebrow{animation:rh-in-blur 1.25s cubic-bezier(.16,1,.3,1) .4s both;}
+    .rh-hero__title{animation:rh-in-blur 1.25s cubic-bezier(.16,1,.3,1) .55s both;}
     /* fade-out exit: title/eyebrow dim + drift up as the curtain covers the pinned hero */
     @supports (animation-timeline: scroll()){
       @keyframes rh-hero-exit{to{opacity:0; transform:translateY(-46px);}}
-      .rh-hero__eyebrow{animation:rh-in-up 1s cubic-bezier(.2,.7,.2,1) .4s both, rh-hero-exit linear both;
+      .rh-hero__eyebrow{animation:rh-in-blur 1.25s cubic-bezier(.16,1,.3,1) .4s both, rh-hero-exit linear both;
         animation-timeline:auto, scroll(root); animation-range:normal, 0 70vh;}
-      .rh-hero__title{animation:rh-in-up 1s cubic-bezier(.2,.7,.2,1) .55s both, rh-hero-exit linear both;
+      .rh-hero__title{animation:rh-in-blur 1.25s cubic-bezier(.16,1,.3,1) .55s both, rh-hero-exit linear both;
         animation-timeline:auto, scroll(root); animation-range:normal, 0 70vh;}
       /* header exits on the SAME scroll timeline as the eyebrow — perfect sync */
       .rh-header-slot[data-theme="light"]{animation:rh-in-fade .9s ease .15s both, rh-hero-exit linear both;
@@ -293,7 +296,7 @@
 
     /* marker draws itself left to right. The lifestyle one waits for its line
        to land; the waves one waits for the whole section to own the screen, so
-       it is keyed off .is-full from setupTheme rather than the 15% observer. */
+       it is keyed off .is-marked from setupTheme rather than the 15% observer. */
     .rh-life__title em, .rh-waves__title em{background-size:0% 100%;
       transition:background-size .8s cubic-bezier(.22,.75,.25,1) .5s;}
     .rh-life__title.in em{background-size:100% 100%;}
@@ -302,8 +305,8 @@
        the marker sweeps under it. The base rule outside this block stays dark,
        which is correct for reduced motion where the yellow is always drawn. */
     .rh-waves__title em{color:inherit;
-      transition:background-size .8s cubic-bezier(.22,.75,.25,1) .1s, color .5s ease .25s;}
-    .rh-waves.is-full .rh-waves__title em{background-size:100% 100%; color:#151310;}
+      transition:background-size .8s cubic-bezier(.22,.75,.25,1) .1s, color .3s ease .15s;}
+    .rh-waves.is-marked .rh-waves__title em{background-size:100% 100%; color:#151310;}
 
     /* the story reads in like a line of verse: title, then sentence, then link,
        each rising out of a soft blur rather than snapping in */
@@ -595,11 +598,11 @@ class Component extends DCLogic {
       const dark = el.classList.contains('is-dark') ? frac >= 0.34 : frac >= 0.40;
       el.classList.toggle('is-dark', dark);
 
-      /* "100% on screen" = as much of the section as can be shown, is shown.
-         Measuring against min(vh, height) keeps this reachable on mobile,
-         where the section is 100svh but innerHeight is larger. Latches, so
-         the marker never rewinds once it has drawn. */
-      if (visible / Math.min(vh, r.height) >= 0.98) el.classList.add('is-full');
+      /* The marker draws once the section owns 70% of the screen. Measuring
+         against min(vh, height) keeps the fraction meaningful on mobile, where
+         the section is 100svh but innerHeight is larger. Latches, so the
+         marker never rewinds once it has drawn. */
+      if (visible / Math.min(vh, r.height) >= 0.70) el.classList.add('is-marked');
       // the header only needs light ink while the dark block is actually under it
       document.documentElement.classList.toggle('rh-dark-zone', dark && r.top <= 90 && r.bottom > 90);
     };
