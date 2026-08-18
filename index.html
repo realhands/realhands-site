@@ -41,7 +41,7 @@
   /* ---- funky yellow ---- */
   /* --rh-pin = how much scrolling the pinned assembly scene takes (tune this)
      --rh-title = one size for every section title, so they all match */
-  :root{ --rh-yellow:#EDE94D; --rh-pin:150vh; --rh-title:clamp(22px,2.9vw,40px); }
+  :root{ --rh-yellow:#EDE94D; --rh-pin:40vh; --rh-title:clamp(22px,2.9vw,40px); }
 
   /* ---- full-bleed hero ---- */
   /* curtain reveal: hero pins at the top; the rest of the page slides up over it */
@@ -149,7 +149,7 @@
   .rh-defs__media{margin:0;}
   /* the render's plate is pure white; mix-blend-mode hides that once frames
      decode, but not before, so the element carries the page colour itself */
-  .rh-defs__media img, .rh-defs__media video{width:100%; max-width:560px; height:auto; display:block; margin:0 auto; background:#f4f4f2; mix-blend-mode:multiply;}
+  .rh-defs__media img, .rh-defs__media video{width:100%; max-width:560px; height:auto; display:block; margin:0 auto; background:#fff; mix-blend-mode:multiply;}
   .rh-defs__col{display:flex; flex-direction:column; gap:clamp(22px,3vw,34px);}
   .rh-defs__panels{display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,3.5vw,48px) clamp(20px,2.5vw,36px); align-content:center;}
   .rh-def{padding-top:4px;}
@@ -400,8 +400,9 @@
     <!-- ============ FOOTER ============ -->
     <footer style="margin-top:0; padding-top:34px; padding-bottom:60px; border-top:1px solid rgba(0,0,0,.16);">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:32px;">
-        <div>
-          <span style="font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:#6f6f6f;">© 2026 realhands</span>
+        <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase;">
+          <span style="color:#6f6f6f;">© 2026 realhands</span>
+          <span style="color:#9a9a9a;">Typeset in Archivo and ABC Diatype</span>
         </div>
         <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; text-align:right;">
           <span style="color:#9a9a9a;">Contact</span>
@@ -457,6 +458,7 @@ class Component extends DCLogic {
     if (this._parRaf) cancelAnimationFrame(this._parRaf);
     if (this._revObs) this._revObs.disconnect();
     if (this._scrubScroll) window.removeEventListener('scroll', this._scrubScroll);
+    if (this._scrubWheel) window.removeEventListener('wheel', this._scrubWheel, true);
     if (this._scrubRaf) cancelAnimationFrame(this._scrubRaf);
     if (this._themeScroll) {
       window.removeEventListener('scroll', this._themeScroll);
@@ -502,67 +504,108 @@ class Component extends DCLogic {
      the playhead (encoded all-keyframe for precise seeking). */
   setupScrub() {
     if (this._scrubScroll) window.removeEventListener('scroll', this._scrubScroll);
+    if (this._scrubWheel) window.removeEventListener('wheel', this._scrubWheel, true);
     if (this._scrubRaf) cancelAnimationFrame(this._scrubRaf);
     this._scrubRaf = null;
     this._scrubProg = 0;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    const sec = document.querySelector('.rh-defs');
     const panels = Array.prototype.slice.call(document.querySelectorAll('.rh-defs__panel'));
-    this._stage = 0;
+    const last = Math.max(0, panels.length - 1);
+    const fine = window.matchMedia ? window.matchMedia('(pointer: fine)').matches : true;
+    this._step = 0;
+    let cooldownUntil = 0;
+    let released = false;      // stepped off the end: stop owning the wheel
+    const STEP_MS = 620;       // one point per gesture, however fast the wheel spins
 
-    // 0 the instant the scene locks into place, 1 when the pin releases.
-    // Nothing plays while the section is still arriving.
-    const targetProg = () => {
-      const sec = document.querySelector('.rh-defs');
+    const showStep = () => {
+      for (let i = 0; i < panels.length; i++) panels[i].classList.toggle('is-active', i === this._step);
+    };
+
+    // true while the scene owns the screen (pinned, sticky child at the top)
+    const covering = () => {
+      if (!sec) return false;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (vh < 1) return false;
+      const r = sec.getBoundingClientRect();
+      return r.top <= 0 && r.bottom > vh;
+    };
+
+    // touch has no wheel to meter, so there it stays scroll-driven
+    const scrollProg = () => {
       if (!sec) return 0;
       const vh = window.innerHeight || document.documentElement.clientHeight;
-      if (vh < 1) return 0;              // degenerate viewport (hidden/prerender)
-      const pin = sec.offsetHeight - vh; // scrollable distance while pinned
-      if (pin <= 0) return 0;            // unpinned (reduced motion) — hold exploded
+      if (vh < 1) return 0;
+      const pin = sec.offsetHeight - vh;
+      if (pin <= 0) return 0;
       return Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / pin));
     };
 
-    const applyStage = (p) => {
-      if (!panels.length) return;
-      const f = p * panels.length;
-      let s = this._stage;
-      // ±0.06 of a stage of hysteresis so parking on a boundary can't flicker
-      if (f > s + 1 + 0.06) s = Math.min(panels.length - 1, Math.floor(f));
-      else if (f < s - 0.06) s = Math.max(0, Math.floor(f));
-      if (s !== this._stage) {
-        this._stage = s;
-        for (let i = 0; i < panels.length; i++) panels[i].classList.toggle('is-active', i === s);
-      }
-    };
+    const targetProg = () => (fine ? (last ? this._step / last : 0) : scrollProg());
 
     const update = () => {
       this._scrubRaf = null;
       const el = this.scrubVideoEl;
       if (!el) return;
       const t = targetProg();
-      // ease toward the target so the assembly glides with the page's scroll feel
       this._scrubProg += (t - this._scrubProg) * 0.18;
-      if (Math.abs(t - this._scrubProg) > 0.002) {
-        this._scrubRaf = requestAnimationFrame(update);
-      } else {
-        this._scrubProg = t;
+      if (Math.abs(t - this._scrubProg) > 0.002) this._scrubRaf = requestAnimationFrame(update);
+      else this._scrubProg = t;
+      if (!fine) {
+        const s = Math.max(0, Math.min(last, Math.floor(this._scrubProg * panels.length)));
+        if (s !== this._step) { this._step = s; showStep(); }
       }
-      applyStage(this._scrubProg);
       if (el.readyState >= 1 && el.duration) {
         const want = this._scrubProg * Math.max(0, el.duration - 0.05);
         if (Math.abs((el.currentTime || 0) - want) > 0.02) el.currentTime = want;
       }
     };
+    const kick = () => { if (this._scrubRaf == null) this._scrubRaf = requestAnimationFrame(update); };
 
-    const onScroll = () => { if (this._scrubRaf == null) this._scrubRaf = requestAnimationFrame(update); };
+    /* One wheel gesture advances exactly one point. Events arriving inside the
+       cooldown are swallowed, so a fast flick cannot skip the four points.
+       Capture phase + stopPropagation keeps the page's smooth scroll out of it. */
+    const onWheel = (e) => {
+      if (e.ctrlKey) return;                                   // pinch zoom
+      if (!covering()) { released = false; return; }
+      if (released) return;                                    // on the way out
+      const dir = e.deltaY > 0 ? 1 : -1;
+      if (dir > 0 && this._step >= last) { released = true; return; }
+      if (dir < 0 && this._step <= 0) { released = true; return; }
+      e.preventDefault();
+      e.stopImmediatePropagation();   // keep the page smooth-scroll out of it
+      const now = performance.now();
+      if (now < cooldownUntil) return;
+      cooldownUntil = now + STEP_MS;
+      this._step = Math.max(0, Math.min(last, this._step + dir));
+      showStep();
+      kick();
+    };
+
+    const onScroll = () => {
+      if (!covering()) {
+        released = false;
+        const vh = window.innerHeight || 1;
+        const r = sec ? sec.getBoundingClientRect() : null;
+        // arm the scene from whichever side it is approached
+        if (r && r.top > vh * 0.5 && this._step !== 0) { this._step = 0; showStep(); }
+        else if (r && r.bottom < vh * 0.5 && this._step !== last) { this._step = last; showStep(); }
+      }
+      kick();
+    };
+
+    this._scrubWheel = onWheel;
     this._scrubScroll = onScroll;
+    if (fine) window.addEventListener('wheel', onWheel, { passive: false, capture: true });
     window.addEventListener('scroll', onScroll, { passive: true });
-    const el = this.scrubVideoEl;
-    if (el) {
-      el.pause();
-      if (el.readyState < 1) el.addEventListener('loadedmetadata', onScroll, { once: true });
+    const el0 = this.scrubVideoEl;
+    if (el0) {
+      el0.pause();
+      if (el0.readyState < 1) el0.addEventListener('loadedmetadata', kick, { once: true });
     }
-    onScroll();
+    showStep();
+    kick();
   }
 
   setupReveal() {
