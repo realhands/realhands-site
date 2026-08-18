@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="./project/image-slot.js"></script>
 <script src="./project/rh-header.js?v=14"></script>
-<script src="./project/rh-scroll.js?v=9"></script>
+<script src="./project/rh-scroll.js?v=10"></script>
 <style>
   @font-face{
     font-family:'Archivo';
@@ -231,13 +231,13 @@
     .rh-hero__video{animation:rh-in-zoom 1.6s cubic-bezier(.2,.7,.2,1) both;}
     .rh-header-slot[data-theme="light"]{animation:rh-in-fade .9s ease .15s both;}
     .rh-hero__eyebrow{animation:rh-in-blur 1.25s cubic-bezier(.16,1,.3,1) .4s both;}
-    .rh-hero__title{animation:rh-in-blur 1.25s cubic-bezier(.16,1,.3,1) .55s both;}
+    .rh-hero__title{animation:rh-in-up 1s cubic-bezier(.2,.7,.2,1) .55s both;}
     /* fade-out exit: title/eyebrow dim + drift up as the curtain covers the pinned hero */
     @supports (animation-timeline: scroll()){
       @keyframes rh-hero-exit{to{opacity:0; transform:translateY(-46px);}}
       .rh-hero__eyebrow{animation:rh-in-blur 1.25s cubic-bezier(.16,1,.3,1) .4s both, rh-hero-exit linear both;
         animation-timeline:auto, scroll(root); animation-range:normal, 0 70vh;}
-      .rh-hero__title{animation:rh-in-blur 1.25s cubic-bezier(.16,1,.3,1) .55s both, rh-hero-exit linear both;
+      .rh-hero__title{animation:rh-in-up 1s cubic-bezier(.2,.7,.2,1) .55s both, rh-hero-exit linear both;
         animation-timeline:auto, scroll(root); animation-range:normal, 0 70vh;}
       /* header exits on the SAME scroll timeline as the eyebrow — perfect sync */
       .rh-header-slot[data-theme="light"]{animation:rh-in-fade .9s ease .15s both, rh-hero-exit linear both;
