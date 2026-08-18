@@ -329,10 +329,12 @@
     .rh-life__img--b{margin-top:0;}
     /* stacked pinned scene has to fit one screen: everything sized in svh so it
        scales with the viewport instead of overflowing on short screens */
-    .rh-defs__layout{grid-template-columns:1fr; gap:clamp(14px,2.5svh,26px);}
-    .rh-defs__media img, .rh-defs__media video{max-height:32svh; width:auto; max-width:100%;}
-    .rh-defs__col{gap:clamp(12px,2svh,22px);}
-    .rh-defs__panels{min-height:clamp(112px,26svh,190px);}
+    .rh-defs__layout{grid-template-columns:1fr; gap:clamp(18px,3svh,30px);}
+    .rh-defs__media img, .rh-defs__media video{max-height:44svh; width:auto; max-width:100%;}
+    .rh-defs__col{gap:clamp(14px,2svh,22px);}
+    /* panels are absolutely stacked, so this min-height IS the container's
+       height - it only has to clear the tallest panel, not guess high */
+    .rh-defs__panels{min-height:clamp(112px,17svh,164px);}
     .rh-story__inner{grid-template-columns:1fr;}
     .rh-story__img img{height:clamp(280px,55vw,420px);}
   }
@@ -355,8 +357,10 @@
     .rh-waves__title{max-width:none;}
     .rh-def__body{font-size:13.5px;}
     /* the pinned scene still has to fit one screen at 320x568 */
-    .rh-defs__media img, .rh-defs__media video{max-height:26svh;}
-    .rh-defs__panels{min-height:clamp(120px,30svh,190px);}
+    .rh-defs__media img, .rh-defs__media video{max-height:52svh;}
+    .rh-defs__panels{min-height:clamp(126px,15svh,150px);}
+    .rh-defs__layout{gap:clamp(20px,3svh,30px);}
+    .rh-defs__col{gap:clamp(14px,2svh,20px);}
     .rh-defs__panel .rh-def__title{font-size:clamp(19px,5.5vw,24px);}
     .rh-defs__panel .rh-def__body{font-size:13.5px; line-height:1.55;}
     .rh-defs__prog-track{flex:0 1 90px;}
