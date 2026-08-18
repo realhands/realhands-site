@@ -101,10 +101,12 @@
     letter-spacing:-.035em; line-height:.95; font-size:clamp(28px,6vw,100px);}
   .rh-story__head em{font-style:normal; color:inherit;}
   .rh-story__body{position:relative; z-index:1; display:grid;
-    grid-template-columns:1fr minmax(0,43.6%); gap:clamp(24px,4vw,64px); align-items:start;}
+    /* minmax(0,1fr) rather than 1fr, so a wide child can never floor the
+       track at its min-content width and push the photograph off the rail */
+    grid-template-columns:minmax(0,1fr) minmax(0,43.6%); gap:clamp(24px,4vw,64px); align-items:start;}
   /* the copy sits low and inset, so the eye travels name, mark, sentence */
   .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;
-    padding-top:clamp(50px,12.6vh,154px); padding-left:0;}
+    padding-top:calc(clamp(50px,12.6vh,154px) + 40px); padding-left:0;}
   .rh-story__mark{display:block; width:clamp(34px,3.4vw,50px); height:auto;}
   /* the name, mark and sentence move right together so they stay on one rail,
      far enough that the name crosses the photograph's left edge */
@@ -253,7 +255,7 @@
        the right, and the words rise out of a blur behind it. Every value is
        driven by scroll position, so the whole thing holds still the moment
        the reader stops moving. */
-    .rh-story__mark{transform-origin:50% 50%; will-change:transform;
+    .rh-story__mark{transform-origin:50% 50%;
       transform:translate(calc((1 - var(--rh-in-mark)) * 44vw),
                           calc((1 - var(--rh-in-mark)) * -6vh))
                 rotate(calc((1 - var(--rh-in-mark)) * 720deg))
@@ -505,10 +507,10 @@
       <h2 class="rh-story__head">Made by <em>realhands</em></h2>
       <div class="rh-story__body">
         <div class="rh-story__text">
-          <img class="rh-story__mark" src="project/realhands-mark.png" alt="" aria-hidden="true">
+          <img class="rh-story__mark" src="project/uploads/hands-2.svg" alt="" aria-hidden="true">
           <p class="rh-story__p">Born between Beirut and Paris, each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
           <p class="rh-story__warranty"><strong>Guaranteed for life.</strong> Buy one weight, once.</p>
-          <a href="story.html" class="rh-glass rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
+          <a href="story.html" class="rh-cta rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
         </div>
         <figure class="rh-story__img">
           <img src="project/workshop-1.jpg" alt="The family workshop, stainless steel shaped by hand" class="rh-parallax" data-parallax="0.12" data-parallax-scale="1.18">
@@ -611,39 +613,62 @@ class Component extends DCLogic {
     }
     if (this._introRaf) cancelAnimationFrame(this._introRaf);
     this._introRaf = null;
+    this._introP = null;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const seg = (p, a, b) => Math.max(0, Math.min(1, (p - a) / (b - a)));
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    /* smoothstep, not ease-out: gentle at both ends, so the mark neither
+       lurches the moment it starts nor slams into its final size */
+    const ease = (t) => t * t * (3 - 2 * t);
 
-    const update = () => {
-      this._introRaf = null;
-      const el = document.querySelector('.rh-story');
-      if (!el) return;
-      const vh = window.innerHeight || document.documentElement.clientHeight;
-      if (vh < 1) return;
-      /* Anchored on the mark's own layout position, not the section's top
-         edge. The mark sits well down inside the section, so a section-based
-         range ran the whole entrance below the fold, where nobody could see
-         it. offsetHeight is the untransformed height, and the parent's rect
-         is unaffected by its children's transforms, so this stays stable
-         while the mark itself is being scaled. */
+    /* Where the scroll position says the entrance should be.
+       Anchored on the mark's own layout position, not the section's top edge:
+       the mark sits well down inside the section, so a section-based range
+       ran the whole entrance below the fold. offsetHeight is the untransformed
+       height, and the parent's rect is unaffected by its children's
+       transforms, so this stays stable while the mark is being scaled.
+       The span is a little over one viewport, which at this section's scroll
+       weight is roughly four wheel gestures rather than one and a half. */
+    const targetP = () => {
       const txt = document.querySelector('.rh-story__text');
       const mk = document.querySelector('.rh-story__mark');
-      if (!txt || !mk) return;
+      if (!txt || !mk) return null;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (vh < 1) return null;
       const pad = parseFloat(getComputedStyle(txt).paddingTop) || 0;
       const mc = txt.getBoundingClientRect().top + pad + mk.offsetHeight / 2;
-      const p = Math.max(0, Math.min(1, (vh * 0.92 - mc) / (vh * 0.60)));
-      el.style.setProperty('--rh-in-mark', ease(seg(p, 0.00, 0.72)).toFixed(4));
-      el.style.setProperty('--rh-in-img',  ease(seg(p, 0.24, 0.92)).toFixed(4));
-      el.style.setProperty('--rh-in-text', ease(seg(p, 0.44, 1.00)).toFixed(4));
+      return Math.max(0, Math.min(1, (vh * 0.92 - mc) / (vh * 0.62)));
     };
 
-    const onScroll = () => { if (this._introRaf == null) this._introRaf = requestAnimationFrame(update); };
-    this._introScroll = onScroll;
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    update();
+    /* The applied progress chases the scroll-derived one instead of snapping
+       to it. That is what makes it read as smooth: a coarse wheel step moves
+       the target instantly, but the mark still travels there across several
+       frames. It settles rather than drifting, so the entrance still comes to
+       rest when the reader stops. */
+    const apply = () => {
+      this._introRaf = null;
+      const el = document.querySelector('.rh-story');
+      const t = targetP();
+      if (!el || t == null) return;
+      if (this._introP == null) this._introP = t;
+      this._introP += (t - this._introP) * 0.09;
+      const settled = Math.abs(t - this._introP) < 0.0008;
+      if (settled) this._introP = t;
+      const p = this._introP;
+      el.style.setProperty('--rh-in-mark', ease(seg(p, 0.00, 0.66)).toFixed(4));
+      el.style.setProperty('--rh-in-img',  ease(seg(p, 0.22, 0.88)).toFixed(4));
+      el.style.setProperty('--rh-in-text', ease(seg(p, 0.42, 1.00)).toFixed(4));
+      if (!settled) this._introRaf = requestAnimationFrame(apply);
+    };
+
+    const kick = () => { if (this._introRaf == null) this._introRaf = requestAnimationFrame(apply); };
+    this._introScroll = kick;
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('resize', kick);
+    /* the mark's height feeds the anchor, so recompute once it has decoded */
+    const mk0 = document.querySelector('.rh-story__mark');
+    if (mk0 && !mk0.complete) mk0.addEventListener('load', kick, { once: true });
+    apply();
   }
 
 
