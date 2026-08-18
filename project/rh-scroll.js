@@ -31,7 +31,7 @@
     ['.rh-defs',  1.70],   // 2 - pinned product scene, heavy
     ['.rh-waves', 1.30],   // 3 - dense enough to matter, a touch heavy
     ['.rh-life',  0.92],   // 4 - the feeling, slightly free
-    ['.rh-story', 1.00],   // 5 - closing story, neutral
+    ['.rh-story', 1.90],   // 5 - closing story, heavy so the mark's turn reads
     ['.rh-swirl', 1.00]
   ];
 

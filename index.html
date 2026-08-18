@@ -15,7 +15,7 @@
 <script src="./project/image-slot.js"></script>
 <script src="./project/rh-header.js?v=14"></script>
 <script src="./project/rh-button.js?v=1"></script>
-<script src="./project/rh-scroll.js?v=11"></script>
+<script src="./project/rh-scroll.js?v=12"></script>
 <style>
   @font-face{
     font-family:'Archivo';
@@ -645,10 +645,11 @@ class Component extends DCLogic {
          into view - any earlier and the opening would play below the fold.
          The floor keeps a quarter-viewport of travel even if the mark sits
          unusually deep in the section. */
-      /* 0.27 rather than 0.20: the applied progress chases the target, so it
-         arrives about a fifth of a viewport later than the raw geometry says.
-         Aiming a little early lands the finished layout at 80% visible. */
-      const endTop = vh * 0.27;
+      /* Aimed at 0.38 to land at 70% visible: the applied progress chases the
+         target, so it arrives roughly 70px later than the raw geometry says,
+         and the aim is set early to absorb that. Retune this if the chase
+         factor below ever changes. */
+      const endTop = vh * 0.38;
       const startTop = Math.max(endTop + vh * 0.25, vh - off);
       return Math.max(0, Math.min(1, (startTop - secTop) / (startTop - endTop)));
     };
