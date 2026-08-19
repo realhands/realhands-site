@@ -15,7 +15,7 @@
 <script src="./image-slot.js"></script>
 <script src="./rh-header.js?v=14"></script>
 <script src="./rh-button.js?v=1"></script>
-<script src="./rh-scroll.js?v=13"></script>
+<script src="./rh-scroll.js?v=14"></script>
 <style>
   @font-face{
     font-family:'Archivo';
@@ -49,9 +49,6 @@
   @media (hover:none){
     /* 140svh of stepping travel plus the one-viewport curtain tail */
     :root{ --rh-pin:240svh; }
-    /* 44px hit area without changing the chevron's visual size */
-    .rh-defs__prog-nav::after{content:""; position:absolute; left:50%; top:50%;
-      width:44px; height:44px; transform:translate(-50%,-50%);}
   }
 
   /* ---- full-bleed hero ---- */
@@ -59,12 +56,13 @@
   .rh-hero{position:sticky; top:0; width:100%; height:100vh; height:100svh; overflow:hidden; background:#0b0a08; z-index:0;}
   /* curtain ladder: each section sits above the one before it, so a pinned
      section is covered by the next one sliding up over it */
-  .rh-defs{position:relative; z-index:1;}
-  .rh-waves{position:relative; z-index:2;}
-  .rh-life{position:relative; z-index:3;}
-  .rh-story{position:relative; z-index:4;}
-  .rh-swirl{position:relative; z-index:5;}
-  .rh-wrap{position:relative; z-index:6;}
+  .rh-defs--quad{position:relative; z-index:1;}
+  .rh-defs--spec{position:relative; z-index:2;}
+  .rh-waves{position:relative; z-index:3;}
+  .rh-life{position:relative; z-index:4;}
+  .rh-story{position:relative; z-index:5;}
+  .rh-swirl{position:relative; z-index:6;}
+  .rh-wrap{position:relative; z-index:7;}
   /* section 2 pins and section 3 slides over it, same as the hero.
      Desktop only: on narrow screens the stacked story can exceed one screen. */
   .rh-hero__video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;}
@@ -181,7 +179,6 @@
   .rh-defs{background:#f4f4f2; padding:clamp(24px,3vw,44px) 0 clamp(84px,10vw,150px); min-height:100svh; box-sizing:border-box;}
   .rh-defs__pin{width:100%;}
   .rh-defs__inner{width:100%; padding:0 40px; box-sizing:border-box;}
-  .rh-defs__layout{display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,80px); align-items:center;}
   .rh-defs__media{margin:0;}
   /* The render sits on a flat plate that multiply cancels against the page.
      Two things it depends on, both easy to break by accident:
@@ -192,16 +189,33 @@
      That is why the figure no longer carries .rh-reveal. */
   .rh-defs__media img, .rh-defs__media video{width:100%; max-width:560px; height:auto; display:block; margin:0 auto;
     background:#fff; filter:grayscale(1) contrast(1.18); mix-blend-mode:multiply;}
-  .rh-defs__col{display:flex; flex-direction:column; gap:clamp(22px,3vw,34px);}
-  .rh-defs__panels{display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,3.5vw,48px) clamp(20px,2.5vw,36px); align-content:center;}
   .rh-def{padding-top:4px;}
-  .rh-def__title{margin:16px 0 0; font-size:clamp(17px,1.6vw,22px); font-weight:700; letter-spacing:-.02em; line-height:1.15;}
+  .rh-def__num{font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
+    font-size:11px; letter-spacing:.1em; color:#8a8a86;}
+  .rh-def__title{margin:10px 0 0; font-size:clamp(17px,1.6vw,22px); font-weight:700; letter-spacing:-.02em; line-height:1.15;}
   .rh-def__body{margin:8px 0 0; font-size:12.5px; line-height:1.55; color:#6f6f6b;}
   .rh-defs__cta{margin-top:clamp(4px,1vw,12px);}
-  /* the four points only step under motion, so the counter is hidden in the
-     reduced-motion fallback where all four are listed at once */
-  .rh-defs__prog{display:none;}
-  @media (max-width:520px){ .rh-defs__panels{grid-template-columns:1fr;} }
+
+  /* ---- variant A: the four points as satellites around a centred video ---- */
+  .rh-defs--quad .rh-defs__layout{display:grid;
+    grid-template-columns:1fr clamp(230px,26vw,360px) 1fr;
+    grid-template-areas:"p1 media p2" "p4 media p3" "cta cta cta";
+    gap:clamp(16px,2.4vh,34px) clamp(20px,3vw,54px); align-items:center; justify-items:center;}
+  .rh-defs--quad .rh-def{max-width:26ch;}
+  .rh-defs--quad .rh-def--1{grid-area:p1; text-align:right; justify-self:end;}
+  .rh-defs--quad .rh-def--2{grid-area:p2; text-align:left;  justify-self:start;}
+  .rh-defs--quad .rh-def--3{grid-area:p3; text-align:left;  justify-self:start;}
+  .rh-defs--quad .rh-def--4{grid-area:p4; text-align:right; justify-self:end;}
+  .rh-defs--quad .rh-defs__media{grid-area:media;}
+  .rh-defs--quad .rh-defs__cta{grid-area:cta;}
+
+  /* ---- variant B: wide video over a four-column spec row ---- */
+  .rh-defs--spec .rh-defs__layout{display:flex; flex-direction:column; align-items:center;
+    gap:clamp(20px,3.4vh,46px);}
+  .rh-defs--spec .rh-defs__cols{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%;}
+  .rh-defs--spec .rh-def{padding-left:clamp(14px,1.8vw,26px); border-left:1px solid rgba(21,19,16,.16);}
+  .rh-defs--spec .rh-def:first-child{padding-left:0; border-left:0;}
+  .rh-defs--spec .rh-defs__media video{max-height:44svh; width:auto; max-width:100%;}
 
   /* ---- SECTION 5: swirl (full-bleed closer) ---- */
   .rh-swirl{width:100%; background:#0b0a08; overflow:hidden; line-height:0; min-height:100svh; display:flex; align-items:center; justify-content:center;}
@@ -270,33 +284,33 @@
     /* sticky makes its own stacking context, so the video's mix-blend-mode needs
        an opaque backdrop here or its white plate stops blending into the page */
     .rh-defs__pin{position:sticky; top:0; height:100svh; display:flex; align-items:center; background:#f4f4f2;}
-    /* Section 3 is pulled up one viewport so it starts rising over section 2
-       while that pin is still stuck - a sticky child cannot hold past its own
-       section, so the overlap has to come from the next section instead. It
-       then turns black on its own schedule (setupTheme). */
+    /* Each pinned block is covered by the next one rising over it: a sticky
+       child cannot hold past its own section, so the overlap has to come from
+       the next section's negative margin. */
+    .rh-defs--spec{margin-top:-100svh;}
     .rh-waves{margin-top:-100svh;}
-    /* min-height reserves room for the tallest panel so stepping never jumps the CTA */
-    .rh-defs__panels{display:block; position:relative; min-height:clamp(140px,12vw,158px);}
-    .rh-defs__panel{position:absolute; top:0; left:0; width:100%;
-      opacity:0; transform:translateY(14px); pointer-events:none;
-      transition:opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1);}
-    .rh-defs__panel.is-active{opacity:1; transform:none; pointer-events:auto;}
-    /* one panel at a time can afford to be much larger, so the change is obvious */
-    .rh-defs__panel .rh-def__title{margin:14px 0 0; font-size:clamp(24px,2.7vw,38px); line-height:1.1;}
-    .rh-defs__panel .rh-def__body{margin:14px 0 0; font-size:clamp(14px,1.15vw,17px); line-height:1.6; max-width:44ch;}
-    /* 01 - 04, with the rule between the two numbers doubling as the bar */
-    .rh-defs__prog{display:flex; align-items:center; gap:14px;
-      font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
-      font-size:12px; letter-spacing:.08em; color:#8a8a86;}
-    .rh-defs__prog-cur{color:#151310;}
-    .rh-defs__prog-track{position:relative; flex:0 1 150px; height:1px; background:rgba(21,19,16,.18);}
-    .rh-defs__prog-fill{position:absolute; inset:0 auto 0 0; width:25%; background:#151310;
-      transition:width .5s cubic-bezier(.2,.7,.2,1);}
-    .rh-defs__prog-nav{position:relative; appearance:none; -webkit-appearance:none; background:none;
-      border:0; padding:0 2px; font:inherit; font-size:15px; line-height:1; color:#8a8a86;
-      cursor:pointer; transition:color .18s ease, opacity .18s ease;}
-    .rh-defs__prog-nav:hover:not(:disabled){color:#151310;}
-    .rh-defs__prog-nav:disabled{opacity:.28; cursor:default;}
+
+    /* Every point keys off --rh-p, the section's own scroll progress, which
+       setupScrub publishes on the section. --a staggers the start of each, so
+       they arrive in sequence off the same value that drives the video.
+       --rh-p defaults to 1, so with no JS all four are simply present. */
+    .rh-defs .rh-def{
+      --rh-in:clamp(0, calc((var(--rh-p, 1) - var(--a, 0)) * 3.5), 1);
+      opacity:var(--rh-in);
+      filter:blur(calc((1 - var(--rh-in)) * 7px));}
+    .rh-defs .rh-def--1{--a:0.00;}
+    .rh-defs .rh-def--2{--a:0.11;}
+    .rh-defs .rh-def--3{--a:0.22;}
+    .rh-defs .rh-def--4{--a:0.33;}
+    /* A: the satellites drift in toward the video, clockwise from top left */
+    .rh-defs--quad .rh-def{transform:translate(calc((1 - var(--rh-in)) * var(--dx, 0px)),
+                                               calc((1 - var(--rh-in)) * var(--dy, 0px)));}
+    .rh-defs--quad .rh-def--1{--dx:-26px; --dy:-18px;}
+    .rh-defs--quad .rh-def--2{--dx: 26px; --dy:-18px;}
+    .rh-defs--quad .rh-def--3{--dx: 26px; --dy: 18px;}
+    .rh-defs--quad .rh-def--4{--dx:-26px; --dy: 18px;}
+    /* B: the columns rise, left to right */
+    .rh-defs--spec .rh-def{transform:translateY(calc((1 - var(--rh-in)) * 26px));}
     .rh-waves__beats .rh-def:nth-child(2){transition-delay:.07s}
     .rh-waves__beats .rh-def:nth-child(3){transition-delay:.14s}
     /* line-by-line cascade for the two staggered titles — elegant, noticeable */
@@ -332,12 +346,13 @@
     .rh-life__img--b{margin-top:0;}
     /* stacked pinned scene has to fit one screen: everything sized in svh so it
        scales with the viewport instead of overflowing on short screens */
-    .rh-defs__layout{grid-template-columns:1fr; gap:clamp(18px,3svh,30px);}
-    .rh-defs__media img, .rh-defs__media video{max-height:44svh; width:auto; max-width:100%;}
-    .rh-defs__col{gap:clamp(14px,2svh,22px);}
-    /* panels are absolutely stacked, so this min-height IS the container's
-       height - it only has to clear the tallest panel, not guess high */
-    .rh-defs__panels{min-height:clamp(112px,17svh,164px);}
+    /* the quadrant cannot hold once the columns get narrow: stack it */
+    .rh-defs--quad .rh-defs__layout{grid-template-columns:1fr;
+      grid-template-areas:"media" "p1" "p2" "p3" "p4" "cta"; gap:clamp(10px,1.6svh,20px);}
+    .rh-defs--quad .rh-def{text-align:left !important; justify-self:start !important; max-width:none;}
+    .rh-defs--spec .rh-defs__cols{grid-template-columns:1fr 1fr; row-gap:clamp(16px,2.4svh,28px);}
+    .rh-defs--spec .rh-def:nth-child(odd){padding-left:0; border-left:0;}
+    .rh-defs__media img, .rh-defs__media video{max-height:34svh; width:auto; max-width:100%;}
     .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
     .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;}
     .rh-story__text{padding-top:0; padding-left:0;}
@@ -362,19 +377,15 @@
     .rh-waves__title{max-width:none;}
     .rh-def__body{font-size:13.5px;}
     /* the pinned scene still has to fit one screen at 320x568 */
-    .rh-defs__media img, .rh-defs__media video{max-height:52svh;}
-    .rh-defs__panels{min-height:clamp(126px,15svh,150px);}
-    .rh-defs__layout{gap:clamp(20px,3svh,30px);}
-    .rh-defs__col{gap:clamp(14px,2svh,20px);}
-    .rh-defs__panel .rh-def__title{font-size:clamp(19px,5.5vw,24px);}
-    .rh-defs__panel .rh-def__body{font-size:13.5px; line-height:1.55;}
-    .rh-defs__prog-track{flex:0 1 90px;}
+    .rh-defs__media img, .rh-defs__media video{max-height:26svh;}
+    .rh-defs--spec .rh-defs__cols{grid-template-columns:1fr; row-gap:clamp(12px,2svh,20px);}
+    .rh-defs--spec .rh-def{padding-left:0; border-left:0;}
+    .rh-def__title{font-size:16px;}
+    .rh-def__body{font-size:12.5px; line-height:1.5;}
   }
   /* small phones: everything above is one character from breaking at 320 */
   @media (max-width:400px){
     .rh-hero__eyebrow{font-size:12.5px;}
-    .rh-defs__prog{gap:10px;}
-    .rh-defs__prog-track{flex:0 1 64px;}
   }
 </style>
 </helmet>
@@ -400,43 +411,74 @@
     </div>
   </section>
 
-  <!-- ============ SECTION 1 - THE WEIGHT (pinned scroll-scrub, first curtain block) ============ -->
-  <section class="rh-defs">
+  <!-- ============ SECTION 2A - THE WEIGHT (variant A: corner quadrant) ============ -->
+  <section class="rh-defs rh-defs--quad">
+    <div class="rh-defs__pin">
+      <div class="rh-defs__inner">
+        <div class="rh-defs__layout">
+          <div class="rh-def rh-def--1">
+            <div class="rh-def__num">01</div>
+            <h3 class="rh-def__title">Handcrafted, solid, 316L.</h3>
+            <p class="rh-def__body">No molds, no shortcuts. Each piece is lathe-turned and finished by hand, so each one is uniquely yours.</p>
+          </div>
+          <div class="rh-def rh-def--2">
+            <div class="rh-def__num">02</div>
+            <h3 class="rh-def__title">More weight, less space.</h3>
+            <p class="rh-def__body">Maximum mass in a compact form. Small enough for a record bag, present enough for the platter.</p>
+          </div>
+          <figure class="rh-defs__media">
+            <video src="uploads/assembly.mp4" poster="uploads/assembly-poster.jpg" muted playsinline preload="auto" aria-label="Exploded view of the realhands record weight assembling"></video>
+          </figure>
+          <div class="rh-def rh-def--4">
+            <div class="rh-def__num">04</div>
+            <h3 class="rh-def__title">Built to be passed down.</h3>
+            <p class="rh-def__body">Stainless steel doesn't rust, wear, or age out. A weight you pass down, not replace.</p>
+          </div>
+          <div class="rh-def rh-def--3">
+            <div class="rh-def__num">03</div>
+            <h3 class="rh-def__title">Hear more of the record.</h3>
+            <p class="rh-def__body">Added inertia tames resonance and micro-vibration, so the needle reads every groove true.</p>
+          </div>
+          <div class="rh-defs__cta">
+            <a href="Shop.dc.html" class="rh-cta">See full specs &amp; order <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2B - THE WEIGHT (variant B: spec sheet) ============ -->
+  <section class="rh-defs rh-defs--spec">
     <div class="rh-defs__pin">
       <div class="rh-defs__inner">
         <div class="rh-defs__layout">
           <figure class="rh-defs__media">
-            <video ref="{{ scrubVideoRef }}" src="uploads/assembly.mp4" poster="uploads/assembly-poster.jpg" muted playsinline preload="auto" aria-label="Exploded view of the realhands record weight assembling"></video>
+            <video src="uploads/assembly.mp4" poster="uploads/assembly-poster.jpg" muted playsinline preload="auto" aria-label="Exploded view of the realhands record weight assembling"></video>
           </figure>
-          <div class="rh-defs__col">
-            <div class="rh-defs__panels">
-              <div class="rh-def rh-defs__panel is-active">
-                <h3 class="rh-def__title">Handcrafted, solid, 316L.</h3>
-                <p class="rh-def__body">No molds, no shortcuts. Each piece is lathe-turned and finished by hand, so each one is uniquely yours.</p>
-              </div>
-              <div class="rh-def rh-defs__panel">
-                <h3 class="rh-def__title">More weight, less space.</h3>
-                <p class="rh-def__body">Maximum mass in a compact form. Small enough for a record bag, present enough for the platter.</p>
-              </div>
-              <div class="rh-def rh-defs__panel">
-                <h3 class="rh-def__title">Hear more of the record.</h3>
-                <p class="rh-def__body">Added inertia tames resonance and micro-vibration, so the needle reads every groove true.</p>
-              </div>
-              <div class="rh-def rh-defs__panel">
-                <h3 class="rh-def__title">Built to be passed down.</h3>
-                <p class="rh-def__body">Stainless steel doesn't rust, wear, or age out. A weight you pass down, not replace.</p>
-              </div>
+          <div class="rh-defs__cols">
+            <div class="rh-def rh-def--1">
+              <div class="rh-def__num">01</div>
+              <h3 class="rh-def__title">Handcrafted, solid, 316L.</h3>
+              <p class="rh-def__body">No molds, no shortcuts. Each piece is lathe-turned and finished by hand, so each one is uniquely yours.</p>
             </div>
-            <div class="rh-defs__prog">
-              <button type="button" class="rh-defs__prog-nav" data-rh-step="-1" aria-label="Previous point">&#8249;</button>
-              <span class="rh-defs__prog-cur">01</span>
-              <span class="rh-defs__prog-track" aria-hidden="true"><span class="rh-defs__prog-fill"></span></span>
-              <span class="rh-defs__prog-total">04</span>
-              <button type="button" class="rh-defs__prog-nav" data-rh-step="1" aria-label="Next point">&#8250;</button>
+            <div class="rh-def rh-def--2">
+              <div class="rh-def__num">02</div>
+              <h3 class="rh-def__title">More weight, less space.</h3>
+              <p class="rh-def__body">Maximum mass in a compact form. Small enough for a record bag, present enough for the platter.</p>
             </div>
-            <div class="rh-defs__cta">
-              <a href="Shop.dc.html" class="rh-cta">See full specs &amp; order <span aria-hidden="true">&rarr;</span></a>
+            <div class="rh-def rh-def--3">
+              <div class="rh-def__num">03</div>
+              <h3 class="rh-def__title">Hear more of the record.</h3>
+              <p class="rh-def__body">Added inertia tames resonance and micro-vibration, so the needle reads every groove true.</p>
             </div>
+            <div class="rh-def rh-def--4">
+              <div class="rh-def__num">04</div>
+              <h3 class="rh-def__title">Built to be passed down.</h3>
+              <p class="rh-def__body">Stainless steel doesn't rust, wear, or age out. A weight you pass down, not replace.</p>
+            </div>
+          </div>
+          <div class="rh-defs__cta">
+            <a href="Shop.dc.html" class="rh-cta">See full specs &amp; order <span aria-hidden="true">&rarr;</span></a>
           </div>
         </div>
       </div>
@@ -584,9 +626,10 @@ class Component extends DCLogic {
     }
     if (this._parRaf) cancelAnimationFrame(this._parRaf);
     if (this._revObs) this._revObs.disconnect();
-    if (this._scrubScroll) window.removeEventListener('scroll', this._scrubScroll);
-    if (this._scrubWheel) window.removeEventListener('wheel', this._scrubWheel, true);
-    if (this._scrubNav) document.removeEventListener('click', this._scrubNav);
+    if (this._scrubScroll) {
+      window.removeEventListener('scroll', this._scrubScroll);
+      window.removeEventListener('resize', this._scrubScroll);
+    }
     if (this._scrubRaf) cancelAnimationFrame(this._scrubRaf);
     if (this._themeScroll) {
       window.removeEventListener('scroll', this._themeScroll);
@@ -719,208 +762,76 @@ class Component extends DCLogic {
   /* scroll-scrubbed assembly: scrolling down assembles the exploded weight,
      scrolling up takes it apart. The video is never played — the scroll owns
      the playhead (encoded all-keyframe for precise seeking). */
+  /* Each .rh-defs section drives its own assembly video from its own position.
+     No wheel metering, no step counter, no scroll lock: the section's pin
+     supplies the travel, the weight assembles across the first stretch of it,
+     and the tail is left as curtain travel for whatever slides over next.
+     --rh-p is published on the section so the CSS can stagger the four points
+     off the same progress the video uses. */
   setupScrub() {
-    if (this._scrubScroll) window.removeEventListener('scroll', this._scrubScroll);
-    if (this._scrubWheel) window.removeEventListener('wheel', this._scrubWheel, true);
-    if (this._scrubNav) document.removeEventListener('click', this._scrubNav);
+    if (this._scrubScroll) {
+      window.removeEventListener('scroll', this._scrubScroll);
+      window.removeEventListener('resize', this._scrubScroll);
+    }
     if (this._scrubRaf) cancelAnimationFrame(this._scrubRaf);
     this._scrubRaf = null;
-    this._scrubProg = 0;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    /* Look the nodes up on every use. The framework re-renders and swaps the
-       DOM, and references captured at mount go stale: class toggles land on
-       detached nodes and getBoundingClientRect() reads zeros. */
-    const getSec = () => document.querySelector('.rh-defs');
-    const getPanels = () => Array.prototype.slice.call(document.querySelectorAll('.rh-defs__panel'));
-    const lastIndex = () => Math.max(0, getPanels().length - 1);
-    const fine = window.matchMedia ? window.matchMedia('(pointer: fine)').matches : true;
-    this._step = 0;
-    let cooldownUntil = 0;
-    let released = false;      // stepped off an end: stop owning the wheel
-    let lastY = window.scrollY || 0;   // to tell which way the page is moving
-    const STEP_MS = 620;       // one point per gesture, however fast the wheel spins
-
-    const showStep = () => {
-      const panels = getPanels();
-      for (let i = 0; i < panels.length; i++) panels[i].classList.toggle('is-active', i === this._step);
-      /* looked up here rather than cached, for the same reason as getPanels */
-      const cur = document.querySelector('.rh-defs__prog-cur');
-      const fill = document.querySelector('.rh-defs__prog-fill');
-      if (cur) cur.textContent = ('0' + (this._step + 1)).slice(-2);
-      if (fill && panels.length) fill.style.width = (((this._step + 1) / panels.length) * 100) + '%';
-      syncNav();
-    };
-
-    /* the chevrons go inert at the ends rather than disappearing, so the
-       control never changes width under the reader */
-    const syncNav = () => {
-      const last = lastIndex();
-      const navs = document.querySelectorAll('.rh-defs__prog-nav');
-      for (let i = 0; i < navs.length; i++) {
-        const dir = parseInt(navs[i].getAttribute('data-rh-step'), 10) || 0;
-        navs[i].disabled = dir < 0 ? this._step <= 0 : this._step >= last;
-      }
-    };
-
-    /* Delegated, so a framework re-render can't strand the handler on a
-       detached node. Deliberately never touches `released` or the scroll lock:
-       clicking through the points must not hand the page back early. */
-    const onNavClick = (e) => {
-      const btn = e.target && e.target.closest ? e.target.closest('.rh-defs__prog-nav') : null;
-      if (!btn) return;
-      e.preventDefault();
-      const dir = parseInt(btn.getAttribute('data-rh-step'), 10) || 0;
-      const next = Math.max(0, Math.min(lastIndex(), this._step + dir));
-      if (next === this._step) return;
-      this._step = next;
-      cooldownUntil = performance.now() + STEP_MS;   // don't let a stray wheel undo it
-      showStep();
-      kick();
-    };
-
-    // true while the scene owns the screen
-    const covering = () => {
-      const sec = getSec();
-      if (!sec) return false;
-      const vh = window.innerHeight || document.documentElement.clientHeight;
-      if (vh < 1) return false;
-      const r = sec.getBoundingClientRect();
-      return r.top <= 2 && r.bottom > vh;   // 2px: layout lands on fractions
-    };
-
-    // touch has no wheel to meter, so there it stays scroll-driven
-    const scrollProg = () => {
-      const sec = getSec();
-      if (!sec) return 0;
-      const vh = window.innerHeight || document.documentElement.clientHeight;
-      if (vh < 1) return 0;
-      const pin = sec.offsetHeight - vh;
-      if (pin <= 0) return 0;
-      /* The last viewport of the pin is curtain travel, where section 3 is
-         already sliding over this one. Finish the four points before it, so
-         nothing is still changing underneath the incoming section. */
-      const usable = Math.max(vh * 0.5, pin - vh);
-      return Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / usable));
-    };
-
-    const targetProg = () => {
-      const last = lastIndex();
-      return fine ? (last ? this._step / last : 0) : scrollProg();
-    };
 
     const update = () => {
       this._scrubRaf = null;
-      const el = this.scrubVideoEl || document.querySelector('.rh-defs__media video');
-      if (!el) return;
-      const t = targetProg();
-      this._scrubProg += (t - this._scrubProg) * 0.18;
-      if (Math.abs(t - this._scrubProg) > 0.002) this._scrubRaf = requestAnimationFrame(update);
-      else this._scrubProg = t;
-      if (!fine) {
-        const panels = getPanels();
-        const s = Math.max(0, Math.min(lastIndex(), Math.floor(this._scrubProg * panels.length)));
-        if (s !== this._step) { this._step = s; showStep(); }
-      }
-      if (el.readyState >= 1 && el.duration) {
-        const want = this._scrubProg * Math.max(0, el.duration - 0.05);
-        if (Math.abs((el.currentTime || 0) - want) > 0.02) el.currentTime = want;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (vh < 1) return;
+      /* Looked up every pass: the framework re-renders and swaps the DOM, so
+         nodes captured at mount go stale and measure zero. */
+      const secs = document.querySelectorAll('.rh-defs');
+      for (let i = 0; i < secs.length; i++) {
+        const sec = secs[i];
+        const pin = sec.offsetHeight - vh;
+        if (pin <= 0) continue;              // unpinned: reduced motion, or narrow
+        /* 0.55 of the pin drives the assembly; the rest is curtain travel, so
+           the weight is finished before the next section starts covering it. */
+        const usable = Math.max(vh * 0.5, pin * 0.55);
+        const p = Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / usable));
+        sec.style.setProperty('--rh-p', p.toFixed(4));
+        const el = sec.querySelector('.rh-defs__media video');
+        if (el && el.readyState >= 1 && el.duration) {
+          const want = p * Math.max(0, el.duration - 0.05);
+          if (Math.abs((el.currentTime || 0) - want) > 0.02) el.currentTime = want;
+        }
       }
     };
     const kick = () => { if (this._scrubRaf == null) this._scrubRaf = requestAnimationFrame(update); };
 
-    /* One wheel gesture advances exactly one point. Events arriving inside the
-       cooldown are swallowed, so a fast flick cannot skip the four points. */
-    const onWheel = (e) => {
-      if (e.ctrlKey) return;                                   // pinch zoom
-      if (!covering()) return;    // rearming happens in onScroll, once fully off screen
-      if (released) return;                                    // on the way out
-      const now = performance.now();
-      if (now < cooldownUntil) {
-        /* Mid-gesture: swallow. This both stops a fast flick skipping points
-           and guarantees the last point is on screen for a beat before any
-           further scroll is allowed to release the page. */
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        return;
-      }
-      const last = lastIndex();
-      const dir = e.deltaY > 0 ? 1 : -1;
-      if (dir > 0 && this._step >= last) { released = true; window.__rhScrollLock = null; return; }
-      if (dir < 0 && this._step <= 0) { released = true; window.__rhScrollLock = null; return; }
-      e.preventDefault();
-      e.stopImmediatePropagation();   // keep the page smooth-scroll out of it
-      cooldownUntil = now + STEP_MS;
-      this._step = Math.max(0, Math.min(last, this._step + dir));
-      showStep();
-      kick();
-    };
-
-    const onScroll = () => {
-      const sec = getSec();
-      const vh0 = window.innerHeight || document.documentElement.clientHeight;
-      const y = window.scrollY || 0;
-      const goingDown = y >= lastY - 1;
-      lastY = y;
-      if (sec && vh0 > 0) {
-        const r0 = sec.getBoundingClientRect();
-        if (r0.bottom <= 0 || r0.top >= vh0) {
-          /* Fully off screen: rearm, and preset the points so the scene reads
-             forwards when approached from above and backwards from below. */
-          released = false;
-          window.__rhScrollLock = null;
-          const want = r0.top >= vh0 ? 0 : lastIndex();
-          if (this._step !== want) { this._step = want; showStep(); }
-        } else if (!released && goingDown && r0.top <= 2 && r0.bottom > vh0 * 0.5) {
-          /* Points remain and the reader is heading down, so hold the page
-             here. Handing the position to the scroll engine keeps the two
-             cooperating: a hard flick can no longer coast through without
-             firing a wheel event for the stepper to meter. Only downward, so
-             scrolling back up is never fought. */
-          window.__rhScrollLock = Math.round(r0.top + window.scrollY);
-        } else {
-          window.__rhScrollLock = null;
-        }
-      }
-      kick();
-    };
-
-    this._scrubWheel = onWheel;
-    this._scrubScroll = onScroll;
-    this._scrubNav = onNavClick;
-    document.addEventListener('click', onNavClick);
-    if (fine) window.addEventListener('wheel', onWheel, { passive: false, capture: true });
-    window.addEventListener('scroll', onScroll, { passive: true });
-    /* Mobile needs the decoder woken up. Two things were stopping it:
-       the `muted` content attribute is not reliably reflected onto the
-       property by the renderer (it read back false), and an unmuted video is
-       refused inline playback on iOS; and this video is only ever seeked,
-       never played, so iOS never decodes a frame for it. Without a frame the
-       element falls back to its poster, and setting both here plus a muted
-       play/pause forces the first frame out. */
+    /* Mobile needs the decoder woken up. Two things stop it: the `muted`
+       content attribute is not reliably reflected onto the property by the
+       renderer (it reads back false), and an unmuted video is refused inline
+       playback on iOS; and these videos are only ever seeked, never played, so
+       iOS never decodes a frame at all. Setting the properties here plus a
+       muted play/pause forces the first frame out. */
     const prime = () => {
-      const el = this.scrubVideoEl || document.querySelector('.rh-defs__media video');
-      if (!el) return;
-      el.muted = true;
-      el.defaultMuted = true;
-      el.playsInline = true;
-      const settle = () => { try { el.pause(); } catch (e) {} kick(); };
-      let pr = null;
-      try { pr = el.play(); } catch (e) { pr = null; }
-      if (pr && pr.then) pr.then(settle).catch(() => { try { el.load(); } catch (e) {} kick(); });
-      else settle();
+      const vids = document.querySelectorAll('.rh-defs__media video');
+      for (let i = 0; i < vids.length; i++) {
+        const el = vids[i];
+        el.muted = true;
+        el.defaultMuted = true;
+        el.playsInline = true;
+        if (el.readyState < 1) el.addEventListener('loadedmetadata', kick, { once: true });
+        el.addEventListener('loadeddata', kick, { once: true });
+        const settle = () => { try { el.pause(); } catch (e) {} kick(); };
+        let pr = null;
+        try { pr = el.play(); } catch (e) { pr = null; }
+        if (pr && pr.then) pr.then(settle).catch(() => { try { el.load(); } catch (e) {} kick(); });
+        else settle();
+      }
     };
 
-    const el0 = this.scrubVideoEl || document.querySelector('.rh-defs__media video');
-    if (el0) {
-      if (el0.readyState < 1) el0.addEventListener('loadedmetadata', kick, { once: true });
-      el0.addEventListener('loadeddata', kick, { once: true });
-      prime();
-    }
-    /* if autoplay was refused outright, the first touch is a user gesture and
-       will let the decoder start */
+    this._scrubScroll = kick;
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('resize', kick);
+    /* if autoplay was refused outright, the first touch is a gesture that lets
+       the decoder start */
     window.addEventListener('touchstart', prime, { passive: true, once: true });
-    showStep();
+    prime();
     kick();
   }
 
@@ -988,7 +899,6 @@ class Component extends DCLogic {
     const t02i = this.state.t02Index;
     return {
       heroVideoRef: (el) => { this.heroVideoEl = el; },
-      scrubVideoRef: (el) => { this.scrubVideoEl = el; },
       t01Photo: this.t01Images[t01i],
       t02Photo: this.t02Images[t02i],
       t01Multi: this.t01Images.length > 1,

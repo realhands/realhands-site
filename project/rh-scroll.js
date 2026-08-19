@@ -28,7 +28,7 @@
 
   var WEIGHTS = [
     ['.rh-hero',  1.00],   // 1 - hero, neutral
-    ['.rh-defs',  1.70],   // 2 - pinned product scene, heavy
+    ['.rh-defs',  1.25],   // 2 - product scene, mildly heavy
     ['.rh-waves', 1.30],   // 3 - dense enough to matter, a touch heavy
     ['.rh-life',  0.92],   // 4 - the feeling, slightly free
     ['.rh-story', 1.20],   // 5 - closing story, a touch heavy
