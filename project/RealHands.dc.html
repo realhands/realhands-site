@@ -15,7 +15,7 @@
 <script src="./image-slot.js"></script>
 <script src="./rh-header.js?v=14"></script>
 <script src="./rh-button.js?v=1"></script>
-<script src="./rh-scroll.js?v=12"></script>
+<script src="./rh-scroll.js?v=13"></script>
 <style>
   @font-face{
     font-family:'Archivo';
@@ -108,11 +108,6 @@
   .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;
     padding-top:calc(clamp(50px,12.6vh,154px) + 40px); padding-left:0;}
   .rh-story__mark{display:block; width:clamp(34px,3.4vw,50px); height:auto;}
-  /* the name, mark and sentence move right together so they stay on one rail,
-     far enough that the name crosses the photograph's left edge */
-  @media (min-width:821px){
-    .rh-story__head, .rh-story__text{padding-left:clamp(0px,5.5vw,90px);}
-  }
   .rh-story__p{margin:0; max-width:34ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
   .rh-story__warranty{margin:0; max-width:34ch; font-size:13.5px; line-height:1.65; color:#3a3a3a;}
   .rh-story__warranty strong{font-weight:700; color:#151310;}
@@ -126,7 +121,7 @@
      capped at 80svh so the photograph never exceeds the screen. The crop is
      what gives, not the width - a 7:10 portrait held to 80svh would be far
      too narrow to meet the name. */
-  .rh-story__img{overflow:hidden; margin:0; margin-top:clamp(-70px,-2.4vw,-20px);
+  .rh-story__img{overflow:hidden; margin:0;
     width:100%; height:92svh;}
   .rh-story__img img{width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:scale(1.18); will-change:transform;}
 
@@ -218,7 +213,7 @@
   /* Entrance for the story block. setupStoryIntro writes these three as the
      section arrives; the defaults are the finished state, so no-JS and
      reduced-motion readers get the composition with nothing to wait for. */
-  .rh-story{--rh-in-mark:1; --rh-in-img:1; --rh-in-text:1;}
+  .rh-story{--rh-in-img:1; --rh-in-text:1;}
 
   /* parallax targets keep extra scale so the JS translate never exposes an edge */
   .rh-parallax{will-change:transform;}
@@ -255,14 +250,11 @@
        the right, and the words rise out of a blur behind it. Every value is
        driven by scroll position, so the whole thing holds still the moment
        the reader stops moving. */
-    .rh-story__mark{transform-origin:50% 50%;
-      transform:translate(calc((1 - var(--rh-in-mark)) * 44vw),
-                          calc((1 - var(--rh-in-mark)) * -6vh))
-                rotate(calc((1 - var(--rh-in-mark)) * 360deg))
-                scale(calc(1 + (1 - var(--rh-in-mark)) * 5.5));}
-    .rh-story__img{opacity:var(--rh-in-img); will-change:transform;
-      transform:translateX(calc((1 - var(--rh-in-img)) * 46vw));}
-    .rh-story__head, .rh-story__p, .rh-story__warranty, .rh-story__link{
+    /* The photograph unfurls downward instead of sliding in from off the
+       right. A clip keeps the element still, which leaves the inner image
+       free to carry its own parallax. */
+    .rh-story__img{clip-path:inset(0 0 calc((1 - var(--rh-in-img)) * 100%) 0);}
+    .rh-story__mark, .rh-story__head, .rh-story__p, .rh-story__warranty, .rh-story__link{
       opacity:var(--rh-in-text);
       filter:blur(calc((1 - var(--rh-in-text)) * 8px));
       transform:translateY(calc((1 - var(--rh-in-text)) * 22px));}
@@ -347,10 +339,7 @@
        height - it only has to clear the tallest panel, not guess high */
     .rh-defs__panels{min-height:clamp(112px,17svh,164px);}
     .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
-    /* no slide-in on the stacked layout: 46vw across a phone reads as a
-       lurch rather than an arrival, so the photograph just fades up */
-    .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;
-      transform:none;}
+    .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;}
     .rh-story__text{padding-top:0; padding-left:0;}
     .rh-story__img img{height:clamp(280px,46svh,420px);}
   }
@@ -643,40 +632,18 @@ class Component extends DCLogic {
        weight is roughly four wheel gestures rather than one and a half. */
     const targetP = () => {
       const sec = document.querySelector('.rh-story');
-      const txt = document.querySelector('.rh-story__text');
-      const mk = document.querySelector('.rh-story__mark');
-      if (!sec || !txt || !mk) return null;
+      if (!sec) return null;
       const vh = window.innerHeight || document.documentElement.clientHeight;
       if (vh < 1) return null;
       const secTop = sec.getBoundingClientRect().top;
-      const pad = parseFloat(getComputedStyle(txt).paddingTop) || 0;
-      const mc = txt.getBoundingClientRect().top + pad + mk.offsetHeight / 2;
-      const off = mc - secTop;              // the mark's centre within the section
-      /* Finishes when the section is 80% visible, which is its top sitting a
-         fifth of the way down the screen. It starts as the mark itself comes
-         into view - any earlier and the opening would play below the fold.
-         The floor keeps a quarter-viewport of travel even if the mark sits
-         unusually deep in the section. */
-      /* Desktop framing: finish with the section 70% visible. Aimed at 0.38
-         rather than 0.30 because the applied progress chases the target and
-         arrives about 70px later than the raw geometry says. Retune if the
-         chase factor below changes. */
-      const endSec = vh * 0.38;
-      const startByMark = vh - off;   // section top when the mark reaches the bottom edge
-
-      /* Stacked layouts put the photograph above the mark, which pushes the
-         mark most of a screen down the section. There the mark only appears
-         after the section has already passed 70%, so the two conditions
-         cannot both hold and the entrance would play out of sight. Detect
-         that and anchor the whole span on the mark instead. */
-      let startTop, endTop;
-      if (startByMark > endSec + vh * 0.15) {
-        startTop = Math.max(endSec + vh * 0.25, startByMark);
-        endTop = endSec;
-      } else {
-        startTop = startByMark;
-        endTop = startByMark - vh * 0.60;
-      }
+      /* Straight section framing: begins as the section clears the bottom
+         edge, ends with it 70% visible. Aimed at 0.38 of a viewport rather
+         than 0.30 because the applied progress chases the target and arrives
+         later than the raw geometry says; retune if the chase factor below
+         changes. Nothing needs holding on screen at a particular size now,
+         so the stacked and wide layouts can share one range. */
+      const startTop = vh * 0.95;
+      const endTop = vh * 0.38;
       return Math.max(0, Math.min(1, (startTop - secTop) / (startTop - endTop)));
     };
 
@@ -695,9 +662,8 @@ class Component extends DCLogic {
       const settled = Math.abs(t - this._introP) < 0.0008;
       if (settled) this._introP = t;
       const p = this._introP;
-      el.style.setProperty('--rh-in-mark', ease(seg(p, 0.00, 0.66)).toFixed(4));
-      el.style.setProperty('--rh-in-img',  ease(seg(p, 0.22, 0.88)).toFixed(4));
-      el.style.setProperty('--rh-in-text', ease(seg(p, 0.42, 1.00)).toFixed(4));
+      el.style.setProperty('--rh-in-img',  ease(seg(p, 0.05, 0.72)).toFixed(4));
+      el.style.setProperty('--rh-in-text', ease(seg(p, 0.30, 1.00)).toFixed(4));
       if (!settled) this._introRaf = requestAnimationFrame(apply);
     };
 
@@ -705,9 +671,6 @@ class Component extends DCLogic {
     this._introScroll = kick;
     window.addEventListener('scroll', kick, { passive: true });
     window.addEventListener('resize', kick);
-    /* the mark's height feeds the anchor, so recompute once it has decoded */
-    const mk0 = document.querySelector('.rh-story__mark');
-    if (mk0 && !mk0.complete) mk0.addEventListener('load', kick, { once: true });
     apply();
   }
 
