@@ -56,13 +56,12 @@
   .rh-hero{position:sticky; top:0; width:100%; height:100vh; height:100svh; overflow:hidden; background:#0b0a08; z-index:0;}
   /* curtain ladder: each section sits above the one before it, so a pinned
      section is covered by the next one sliding up over it */
-  .rh-defs--quad{position:relative; z-index:1;}
-  .rh-defs--spec{position:relative; z-index:2;}
-  .rh-waves{position:relative; z-index:3;}
-  .rh-life{position:relative; z-index:4;}
-  .rh-story{position:relative; z-index:5;}
-  .rh-swirl{position:relative; z-index:6;}
-  .rh-wrap{position:relative; z-index:7;}
+  .rh-defs{position:relative; z-index:1;}
+  .rh-waves{position:relative; z-index:2;}
+  .rh-life{position:relative; z-index:3;}
+  .rh-story{position:relative; z-index:4;}
+  .rh-swirl{position:relative; z-index:5;}
+  .rh-wrap{position:relative; z-index:6;}
   /* section 2 pins and section 3 slides over it, same as the hero.
      Desktop only: on narrow screens the stacked story can exceed one screen. */
   .rh-hero__video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;}
@@ -209,13 +208,6 @@
   .rh-defs--quad .rh-defs__media{grid-area:media;}
   .rh-defs--quad .rh-defs__cta{grid-area:cta;}
 
-  /* ---- variant B: wide video over a four-column spec row ---- */
-  .rh-defs--spec .rh-defs__layout{display:flex; flex-direction:column; align-items:center;
-    gap:clamp(20px,3.4vh,46px);}
-  .rh-defs--spec .rh-defs__cols{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%;}
-  .rh-defs--spec .rh-def{padding-left:clamp(14px,1.8vw,26px); border-left:1px solid rgba(21,19,16,.16);}
-  .rh-defs--spec .rh-def:first-child{padding-left:0; border-left:0;}
-  .rh-defs--spec .rh-defs__media video{max-height:44svh; width:auto; max-width:100%;}
 
   /* ---- SECTION 5: swirl (full-bleed closer) ---- */
   .rh-swirl{width:100%; background:#0b0a08; overflow:hidden; line-height:0; min-height:100svh; display:flex; align-items:center; justify-content:center;}
@@ -284,10 +276,9 @@
     /* sticky makes its own stacking context, so the video's mix-blend-mode needs
        an opaque backdrop here or its white plate stops blending into the page */
     .rh-defs__pin{position:sticky; top:0; height:100svh; display:flex; align-items:center; background:#f4f4f2;}
-    /* Each pinned block is covered by the next one rising over it: a sticky
-       child cannot hold past its own section, so the overlap has to come from
-       the next section's negative margin. */
-    .rh-defs--spec{margin-top:-100svh;}
+    /* Section 3 is pulled up one viewport so it starts rising over section 2
+       while that pin is still stuck: a sticky child cannot hold past its own
+       section, so the overlap has to come from the next section. */
     .rh-waves{margin-top:-100svh;}
 
     /* Every point keys off --rh-p, the section's own scroll progress, which
@@ -309,8 +300,7 @@
     .rh-defs--quad .rh-def--2{--dx: 26px; --dy:-18px;}
     .rh-defs--quad .rh-def--3{--dx: 26px; --dy: 18px;}
     .rh-defs--quad .rh-def--4{--dx:-26px; --dy: 18px;}
-    /* B: the columns rise, left to right */
-    .rh-defs--spec .rh-def{transform:translateY(calc((1 - var(--rh-in)) * 26px));}
+
     .rh-waves__beats .rh-def:nth-child(2){transition-delay:.07s}
     .rh-waves__beats .rh-def:nth-child(3){transition-delay:.14s}
     /* line-by-line cascade for the two staggered titles — elegant, noticeable */
@@ -350,8 +340,6 @@
     .rh-defs--quad .rh-defs__layout{grid-template-columns:1fr;
       grid-template-areas:"media" "p1" "p2" "p3" "p4" "cta"; gap:clamp(10px,1.6svh,20px);}
     .rh-defs--quad .rh-def{text-align:left !important; justify-self:start !important; max-width:none;}
-    .rh-defs--spec .rh-defs__cols{grid-template-columns:1fr 1fr; row-gap:clamp(16px,2.4svh,28px);}
-    .rh-defs--spec .rh-def:nth-child(odd){padding-left:0; border-left:0;}
     .rh-defs__media img, .rh-defs__media video{max-height:34svh; width:auto; max-width:100%;}
     .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
     .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;}
@@ -378,8 +366,6 @@
     .rh-def__body{font-size:13.5px;}
     /* the pinned scene still has to fit one screen at 320x568 */
     .rh-defs__media img, .rh-defs__media video{max-height:26svh;}
-    .rh-defs--spec .rh-defs__cols{grid-template-columns:1fr; row-gap:clamp(12px,2svh,20px);}
-    .rh-defs--spec .rh-def{padding-left:0; border-left:0;}
     .rh-def__title{font-size:16px;}
     .rh-def__body{font-size:12.5px; line-height:1.5;}
   }
@@ -411,7 +397,7 @@
     </div>
   </section>
 
-  <!-- ============ SECTION 2A - THE WEIGHT (variant A: corner quadrant) ============ -->
+  <!-- ============ SECTION 2 - THE WEIGHT (corner quadrant, scroll-scrubbed) ============ -->
   <section class="rh-defs rh-defs--quad">
     <div class="rh-defs__pin">
       <div class="rh-defs__inner">
@@ -447,43 +433,6 @@
     </div>
   </section>
 
-  <!-- ============ SECTION 2B - THE WEIGHT (variant B: spec sheet) ============ -->
-  <section class="rh-defs rh-defs--spec">
-    <div class="rh-defs__pin">
-      <div class="rh-defs__inner">
-        <div class="rh-defs__layout">
-          <figure class="rh-defs__media">
-            <video src="project/uploads/assembly.mp4" poster="project/uploads/assembly-poster.jpg" muted playsinline preload="auto" aria-label="Exploded view of the realhands record weight assembling"></video>
-          </figure>
-          <div class="rh-defs__cols">
-            <div class="rh-def rh-def--1">
-              <div class="rh-def__num">01</div>
-              <h3 class="rh-def__title">Handcrafted, solid, 316L.</h3>
-              <p class="rh-def__body">No molds, no shortcuts. Each piece is lathe-turned and finished by hand, so each one is uniquely yours.</p>
-            </div>
-            <div class="rh-def rh-def--2">
-              <div class="rh-def__num">02</div>
-              <h3 class="rh-def__title">More weight, less space.</h3>
-              <p class="rh-def__body">Maximum mass in a compact form. Small enough for a record bag, present enough for the platter.</p>
-            </div>
-            <div class="rh-def rh-def--3">
-              <div class="rh-def__num">03</div>
-              <h3 class="rh-def__title">Hear more of the record.</h3>
-              <p class="rh-def__body">Added inertia tames resonance and micro-vibration, so the needle reads every groove true.</p>
-            </div>
-            <div class="rh-def rh-def--4">
-              <div class="rh-def__num">04</div>
-              <h3 class="rh-def__title">Built to be passed down.</h3>
-              <p class="rh-def__body">Stainless steel doesn't rust, wear, or age out. A weight you pass down, not replace.</p>
-            </div>
-          </div>
-          <div class="rh-defs__cta">
-            <a href="shop.html" class="rh-cta">See full specs &amp; order <span aria-hidden="true">&rarr;</span></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ============ SECTION 2 — WAVES + STAGGERED HEADLINE (dark) ============ -->
   <section class="rh-waves">
