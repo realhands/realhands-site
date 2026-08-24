@@ -97,24 +97,16 @@
   .rh-story{background:#f4f4f2; padding:0; min-height:100svh; display:flex; align-items:center; overflow:hidden;}
   .rh-story__inner{width:100%; padding:0 40px; box-sizing:border-box;}
   /* the name runs the full rail, and the photograph rises behind it */
-  /* same var(--rh-title) as every other section title, and the same tracking
-     and leading; the weight stays 700 (Archivo Bold) rather than the 800 the
-     others use, which was a deliberate choice for this one */
-  .rh-story__head{margin:0; position:relative; z-index:2; font-weight:700;
-    letter-spacing:-.02em; line-height:1; font-size:var(--rh-title);}
-  .rh-story__head em{font-style:normal; color:inherit;}
+  /* .rh-stagger supplies weight, size, case and the left/centre/right offsets,
+     so this only has to sit in the curtain's stacking order */
+  .rh-story__head{position:relative; z-index:2;}
+  /* same split, gap and alignment as .rh-waves__inner, so the two rows read as
+     the same device. minmax(0,1fr) rather than 1fr keeps a wide child from
+     flooring a track at its min-content width. */
   .rh-story__body{position:relative; z-index:1; display:grid;
-    /* minmax(0,1fr) rather than 1fr, so a wide child can never floor the
-       track at its min-content width and push the photograph off the rail */
-    grid-template-columns:minmax(0,1fr) minmax(0,43.6%); gap:clamp(24px,4vw,64px); align-items:start;}
-  /* the copy sits low and inset, so the eye travels name, mark, sentence */
-  .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;
-    padding-top:calc(clamp(50px,12.6vh,154px) + 40px); padding-left:0;}
-  .rh-story__mark{display:block; width:clamp(34px,3.4vw,50px); height:auto;}
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,4vw,64px); align-items:center;}
+  .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;}
   .rh-story__p{margin:0; max-width:34ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
-  .rh-story__warranty{margin:0; max-width:34ch; font-size:13.5px; line-height:1.65; color:#3a3a3a;}
-  .rh-story__warranty strong{font-weight:700; color:#151310;}
-  .rh-story__link{margin-top:6px; align-self:flex-start;}
   /* only the foot of the lettering crosses the photograph, so the grey run
      stays legible against it */
   /* Width-driven, so the photograph fills its column and reaches back under
@@ -149,7 +141,7 @@
      above the image + beats row. The lifestyle headline is built the same way,
      so both share this cap - each sits directly in its full-bleed section and
      supplies its own 40px rail. */
-  .rh-waves__title, .rh-life__title{text-transform:none; width:100%; max-width:min(960px,74%);
+  .rh-waves__title, .rh-life__title, .rh-story__head{text-transform:none; width:100%; max-width:min(960px,74%);
     margin:0 auto clamp(20px,3.5vh,48px); padding:0 40px; box-sizing:border-box;
     gap:clamp(2px,.6vw,8px);}
 
@@ -170,7 +162,7 @@
   .rh-life__title{margin-bottom:clamp(40px,5.5vw,76px); font-weight:800; text-transform:none; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title); display:flex; flex-direction:column; gap:clamp(2px,.6vw,8px);}
   /* yellow marker. Base state is fully drawn, so reduced motion and no-JS
      still get the highlight; the motion-safe block draws it left to right. */
-  .rh-life__title em, .rh-waves__title em{font-style:normal; color:#151310; padding:0 .1em;
+  .rh-life__title em, .rh-waves__title em, .rh-story__head em{font-style:normal; color:#151310; padding:0 .1em;
     background-image:linear-gradient(var(--rh-yellow),var(--rh-yellow));
     background-repeat:no-repeat; background-position:0 50%; background-size:100% 100%;
     box-decoration-break:clone; -webkit-box-decoration-break:clone;}
@@ -266,7 +258,9 @@
        right. A clip keeps the element still, which leaves the inner image
        free to carry its own parallax. */
     .rh-story__img{clip-path:inset(0 0 calc((1 - var(--rh-in-img)) * 100%) 0);}
-    .rh-story__mark, .rh-story__head, .rh-story__p, .rh-story__warranty, .rh-story__link{
+    /* the headline is driven by .rh-clip's line cascade, exactly as in the
+       two sections above it, so it is deliberately not in this group */
+    .rh-story__p{
       opacity:var(--rh-in-text);
       filter:blur(calc((1 - var(--rh-in-text)) * 8px));
       transform:translateY(calc((1 - var(--rh-in-text)) * 22px));}
@@ -319,9 +313,9 @@
     /* marker draws itself left to right. The lifestyle one waits for its line
        to land; the waves one waits for the whole section to own the screen, so
        it is keyed off .is-marked from setupTheme rather than the 15% observer. */
-    .rh-life__title em, .rh-waves__title em{background-size:0% 100%;
+    .rh-life__title em, .rh-waves__title em, .rh-story__head em{background-size:0% 100%;
       transition:background-size .8s cubic-bezier(.22,.75,.25,1) .5s;}
-    .rh-life__title.in em{background-size:100% 100%;}
+    .rh-life__title.in em, .rh-story__head.in em{background-size:100% 100%;}
     /* "music" sits on the black background long before the yellow gets
        there, so it tracks the section's ink while it waits and only darkens as
        the marker sweeps under it. The base rule outside this block stays dark,
@@ -361,7 +355,7 @@
   /* mobile: 16px side margins everywhere, widening to clear the notch in landscape */
   @media (max-width:640px){
     :root{ --rh-title:clamp(24px,6.6vw,30px); }
-    .rh-wrap, .rh-waves__inner, .rh-life__inner, .rh-defs__inner, .rh-waves__title, .rh-life__title{
+    .rh-wrap, .rh-waves__inner, .rh-life__inner, .rh-defs__inner, .rh-waves__title, .rh-life__title, .rh-story__head{
       padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
     /* the rail comes from the text block and the image's own margin, so both
        sides stay equal instead of doubling up on the left */
@@ -374,7 +368,7 @@
       bottom:calc(clamp(18px,4vh,50px) + 20px + env(safe-area-inset-bottom));}
     /* the 74% cap leaves ~245px of usable width at 375, which flattens the
        staggered lines into noise; let them use the full rail instead */
-    .rh-waves__title, .rh-life__title{max-width:none;}
+    .rh-waves__title, .rh-life__title, .rh-story__head{max-width:none;}
     .rh-def__body{font-size:13.5px;}
     /* the pinned scene still has to fit one screen at 320x568 */
     .rh-defs__media img, .rh-defs__media video{max-height:40svh;}
@@ -515,13 +509,14 @@
   <!-- ============ SECTION 4 - THE STORY (closing block) ============ -->
   <section class="rh-story">
     <div class="rh-story__inner">
-      <h2 class="rh-story__head">Made by <em>real hands</em></h2>
+      <h2 class="rh-story__head rh-stagger rh-reveal rh-clip">
+        <span class="rh-stagger__l1">Made by</span>
+        <span class="rh-stagger__l2">real hands</span>
+        <span class="rh-stagger__l3">in <em>Beirut and Paris</em>.</span>
+      </h2>
       <div class="rh-story__body">
         <div class="rh-story__text">
-          <img class="rh-story__mark" src="uploads/hands-2.svg?v=2" alt="" aria-hidden="true">
-          <p class="rh-story__p">Born between Beirut and Paris, each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
-          <p class="rh-story__warranty"><strong>Guaranteed for life.</strong> Buy one weight, once.</p>
-          <a href="Story.dc.html" class="rh-cta rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
+          <p class="rh-story__p">Each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
         </div>
         <figure class="rh-story__img">
           <img src="workshop-1.jpg" alt="The family workshop, stainless steel shaped by hand" class="rh-parallax" data-parallax="0.12" data-parallax-scale="1.18">
