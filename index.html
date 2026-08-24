@@ -341,11 +341,18 @@
     .rh-life__img--b{margin-top:0;}
     /* stacked pinned scene has to fit one screen: everything sized in svh so it
        scales with the viewport instead of overflowing on short screens */
-    /* the quadrant cannot hold once the columns get narrow: stack it */
-    .rh-defs--quad .rh-defs__layout{grid-template-columns:1fr;
-      grid-template-areas:"media" "p1" "p2" "p3" "p4"; gap:clamp(10px,1.6svh,20px);}
+    /* The quadrant cannot hold satellites around the video once the columns
+       get narrow, but the four-up reading survives as a 2x2 beneath it. That
+       is also shorter than a one-column list, which is what buys the video its
+       size back. Ordered for reading, left to right, not clockwise. */
+    .rh-defs--quad .rh-defs__layout{grid-template-columns:1fr 1fr;
+      grid-template-areas:"media media" "p1 p2" "p3 p4";
+      gap:clamp(12px,2svh,22px) clamp(14px,4vw,26px);
+      /* centring is right for satellites around the video, wrong for a text
+         grid: it leaves the bottom pair on ragged baselines */
+      align-items:start;}
     .rh-defs--quad .rh-def{text-align:left !important; justify-self:start !important; max-width:none;}
-    .rh-defs__media img, .rh-defs__media video{max-height:34svh; width:auto; max-width:100%;}
+    .rh-defs__media img, .rh-defs__media video{max-height:40svh; width:auto; max-width:100%;}
     .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
     .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;}
     .rh-story__text{padding-top:0; padding-left:0;}
@@ -370,17 +377,28 @@
     .rh-waves__title, .rh-life__title{max-width:none;}
     .rh-def__body{font-size:13.5px;}
     /* the pinned scene still has to fit one screen at 320x568 */
-    .rh-defs__media img, .rh-defs__media video{max-height:26svh;}
+    .rh-defs__media img, .rh-defs__media video{max-height:40svh;}
     .rh-def__title{font-size:16px;}
     .rh-def__body{font-size:12.5px; line-height:1.5;}
   }
-  /* Short phones cannot hold the video, four stacked points and the CTA in a
-     single 100svh pin - measured 39px over at 320x568. Trim only where the
-     screen is actually short, so taller phones keep the larger video. */
+  /* Below about 360px two text columns are too narrow to read, so the 2x2
+     goes back to a single column there. */
+  @media (max-width:360px){
+    .rh-defs--quad .rh-defs__layout{grid-template-columns:1fr;
+      grid-template-areas:"media" "p1" "p2" "p3" "p4";}
+  }
+  /* Short screens cannot hold the video and the points in one 100svh pin.
+     Trim only where the screen is actually short, so taller phones keep the
+     larger video. */
   @media (max-width:640px) and (max-height:680px){
-    .rh-defs__media img, .rh-defs__media video{max-height:22svh;}
+    .rh-defs__media img, .rh-defs__media video{max-height:34svh;}
     .rh-def__body{line-height:1.4;}
     .rh-defs--quad .rh-defs__layout{gap:8px;}
+  }
+  /* narrow and short at once: the points are stacked here rather than 2x2, so
+     they take the height back and the video has to give more of it up */
+  @media (max-width:360px) and (max-height:680px){
+    .rh-defs__media img, .rh-defs__media video{max-height:22svh;}
   }
   /* small phones: everything above is one character from breaking at 320 */
   @media (max-width:400px){
@@ -500,7 +518,7 @@
       <h2 class="rh-story__head">Made by <em>realhands</em></h2>
       <div class="rh-story__body">
         <div class="rh-story__text">
-          <img class="rh-story__mark" src="project/uploads/hands-2.svg" alt="" aria-hidden="true">
+          <img class="rh-story__mark" src="project/uploads/hands-2.svg?v=2" alt="" aria-hidden="true">
           <p class="rh-story__p">Born between Beirut and Paris, each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
           <p class="rh-story__warranty"><strong>Guaranteed for life.</strong> Buy one weight, once.</p>
           <a href="story.html" class="rh-cta rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
