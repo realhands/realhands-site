@@ -40,9 +40,12 @@
   .rh-carousel:hover .rh-arrow{opacity:1;}
 
   /* ---- funky yellow ---- */
-  /* --rh-pin = how much scrolling the pinned assembly scene takes (tune this)
+  /* --rh-pin = how much scrolling the pinned assembly scene takes. Its last
+     viewport is curtain travel (section 3 climbing over), so the assembly and
+     the reading window get --rh-pin minus one viewport. Shortening this eats
+     the reading window before it eats the curtain.
      --rh-title = one size for every section title, so they all match */
-  :root{ --rh-yellow:#EDE94D; --rh-pin:100svh; --rh-title:clamp(22px,2.9vw,40px); }
+  :root{ --rh-yellow:#EDE94D; --rh-pin:160svh; --rh-title:clamp(22px,2.9vw,40px); }
   /* Touch has no wheel to meter, so the four points stay scroll-paced there
      (see setupScrub's pointer:fine branch). 40vh would flick through all four
      in one swipe, so give the pin enough travel for each to hold. */
@@ -288,7 +291,7 @@
        they arrive in sequence off the same value that drives the video.
        --rh-p defaults to 1, so with no JS all four are simply present. */
     .rh-defs .rh-def{
-      --rh-in:clamp(0, calc((var(--rh-p, 1) - var(--a, 0)) * 3.5), 1);
+      --rh-in:clamp(0, calc((var(--rh-enter, 1) - var(--a, 0)) * 3.5), 1);
       opacity:var(--rh-in);
       filter:blur(calc((1 - var(--rh-in)) * 7px));}
     .rh-defs .rh-def--1{--a:0.00;}
@@ -369,6 +372,14 @@
     .rh-defs__media img, .rh-defs__media video{max-height:26svh;}
     .rh-def__title{font-size:16px;}
     .rh-def__body{font-size:12.5px; line-height:1.5;}
+  }
+  /* Short phones cannot hold the video, four stacked points and the CTA in a
+     single 100svh pin - measured 39px over at 320x568. Trim only where the
+     screen is actually short, so taller phones keep the larger video. */
+  @media (max-width:640px) and (max-height:680px){
+    .rh-defs__media img, .rh-defs__media video{max-height:18svh;}
+    .rh-def__body{line-height:1.4;}
+    .rh-defs--quad .rh-defs__layout{gap:8px;}
   }
   /* small phones: everything above is one character from breaking at 320 */
   @media (max-width:400px){
@@ -730,10 +741,21 @@ class Component extends DCLogic {
         const sec = secs[i];
         const pin = sec.offsetHeight - vh;
         if (pin <= 0) continue;              // unpinned: reduced motion, or narrow
-        /* 0.55 of the pin drives the assembly; the rest is curtain travel, so
-           the weight is finished before the next section starts covering it. */
-        const usable = Math.max(vh * 0.5, pin * 0.55);
-        const p = Math.max(0, Math.min(1, -sec.getBoundingClientRect().top / usable));
+        const r = sec.getBoundingClientRect();
+
+        /* The four points read off the section ARRIVING, not off the pin: 0 as
+           its top edge reaches the bottom of the screen, 1 by the time it is
+           65% arrived. Keyed to the pin they only began appearing on the frame
+           the curtain began, which left nothing readable. */
+        const enter = Math.max(0, Math.min(1, (vh - r.top) / (vh * 0.65)));
+        sec.style.setProperty('--rh-enter', enter.toFixed(4));
+
+        /* The video reads off the pin, but only the part of it that is not
+           curtain. The last viewport of the pin is where the next section
+           climbs over, so the assembly gets everything before that and
+           finishes on the frame the curtain starts. */
+        const usable = Math.max(vh * 0.4, pin - vh);
+        const p = Math.max(0, Math.min(1, -r.top / usable));
         sec.style.setProperty('--rh-p', p.toFixed(4));
         const el = sec.querySelector('.rh-defs__media video');
         if (el && el.readyState >= 1 && el.duration) {
