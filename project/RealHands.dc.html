@@ -106,6 +106,7 @@
     grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,4vw,64px); align-items:center;}
   .rh-story__text{display:flex; flex-direction:column; align-items:flex-start; gap:20px;}
   .rh-story__p{margin:0; max-width:34ch; font-size:15px; line-height:1.7; color:#3a3a3a;}
+  .rh-story__link{margin-top:6px; align-self:flex-start;}
   /* only the foot of the lettering crosses the photograph, so the grey run
      stays legible against it */
   /* Width-driven, so the photograph fills its column and reaches back under
@@ -142,17 +143,23 @@
      supplies its own 40px rail. */
   .rh-waves__title, .rh-life__title{text-transform:none; width:100%; max-width:min(960px,74%);
     margin:0 auto clamp(20px,3.5vh,48px); padding:0 40px; box-sizing:border-box;
-    gap:clamp(2px,.6vw,8px);}
+    /* em, not a vw clamp: tied to the viewport the gap collapsed to about
+       0.09em on a phone against 0.20em on desktop, so the lines bunched up at
+       exactly the size where they had least room. In em it holds the same
+       rhythm at every width. */
+    gap:0.18em;}
   /* Sits inside the copy column, not across the section, so it takes no rail
      or centring of its own. Size, weight and the left/right offsets still come
      from .rh-stagger. It has to sit AFTER .rh-stagger to undo its uppercase:
      both selectors are a single class, so source order is what decides. */
   .rh-story__head{position:relative; z-index:2; text-transform:none;
-    margin:0 0 clamp(18px,2.5vh,32px); width:100%; gap:clamp(2px,.6vw,8px);}
+    margin:0 0 clamp(18px,2.5vh,32px); width:100%; gap:0.18em;}
 
   /* three engineering beats */
   .rh-waves__copy{display:flex; flex-direction:column; justify-content:center; padding-left:50px;}
   .rh-waves__beats{display:flex; flex-direction:column; gap:clamp(18px,2.2vw,28px);}
+  /* align-self keeps the pill its own width inside the flex column */
+  .rh-waves__cta{margin-top:clamp(22px,3.2vh,38px); align-self:flex-start;}
   .rh-waves__beats .rh-def{padding-top:0;}
   .rh-waves__beats .rh-def__title{margin-top:0;}
   .rh-waves__beats .rh-def__body{max-width:34ch;}
@@ -164,7 +171,7 @@
      width cap and centring (shared rule above), same tight leading. Only the
      gap below differs, so margin-bottom alone is set - margin:0 auto from the
      shared rule has to survive for the block to stay centred. */
-  .rh-life__title{margin-bottom:clamp(40px,5.5vw,76px); font-weight:800; text-transform:none; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title); display:flex; flex-direction:column; gap:clamp(2px,.6vw,8px);}
+  .rh-life__title{margin-bottom:clamp(40px,5.5vw,76px); font-weight:800; text-transform:none; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title); display:flex; flex-direction:column; gap:0.18em;}
   /* yellow marker. Base state is fully drawn, so reduced motion and no-JS
      still get the highlight; the motion-safe block draws it left to right. */
   .rh-life__title em, .rh-waves__title em, .rh-story__head em{font-style:normal; color:#151310; padding:0 .1em;
@@ -198,6 +205,10 @@
     font-size:11px; letter-spacing:.1em; color:#8a8a86;}
   .rh-def__title{margin:10px 0 0; font-size:clamp(17px,1.6vw,22px); font-weight:700; letter-spacing:-.02em; line-height:1.15;}
   .rh-def__body{margin:8px 0 0; font-size:12.5px; line-height:1.55; color:#6f6f6b;}
+  /* The quadrant's columns run about 34 characters, a good deal shorter than
+     the beats in section 3, and a short measure wants tighter leading or the
+     lines drift apart. Scoped to .rh-defs so section 3 keeps its 1.55. */
+  .rh-defs .rh-def__body{line-height:1.4;}
 
   /* ---- variant A: the four points as satellites around a centred video ---- */
   .rh-defs--quad .rh-defs__layout{display:grid;
@@ -265,7 +276,7 @@
     .rh-story__img{clip-path:inset(0 0 calc((1 - var(--rh-in-img)) * 100%) 0);}
     /* the headline is driven by .rh-clip's line cascade, exactly as in the
        two sections above it, so it is deliberately not in this group */
-    .rh-story__p{
+    .rh-story__p, .rh-story__link{
       opacity:var(--rh-in-text);
       filter:blur(calc((1 - var(--rh-in-text)) * 8px));
       transform:translateY(calc((1 - var(--rh-in-text)) * 22px));}
@@ -308,6 +319,7 @@
 
     .rh-waves__beats .rh-def:nth-child(2){transition-delay:.07s}
     .rh-waves__beats .rh-def:nth-child(3){transition-delay:.14s}
+    .rh-waves__cta{transition-delay:.21s}   /* lands just after the third beat */
     /* line-by-line cascade for the two staggered titles — elegant, noticeable */
     .rh-clip{opacity:1 !important; transform:none !important;}
     .rh-clip > span{opacity:0; transform:translateY(.9em); transition:opacity .7s ease, transform .95s cubic-bezier(.16,1,.3,1);}
@@ -490,6 +502,7 @@
             <p class="rh-def__body">Most records carry a slight dish. Steady mass tames it, so the stylus tracks the groove's true path.</p>
           </div>
         </div>
+        <a href="Shop.dc.html" class="rh-cta rh-waves__cta rh-reveal">Shop</a>
       </div>
     </div>
   </section>
@@ -523,6 +536,7 @@
             <span class="rh-stagger__l3">in <em>Beirut and Paris</em></span>
           </h2>
           <p class="rh-story__p">Each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
+          <a href="Story.dc.html" class="rh-cta rh-story__link">Read our story <span aria-hidden="true">&rarr;</span></a>
         </div>
         <figure class="rh-story__img">
           <img src="workshop-1.jpg" alt="The family workshop, stainless steel shaped by hand" class="rh-parallax" data-parallax="0.12" data-parallax-scale="1.18">
