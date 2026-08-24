@@ -140,8 +140,10 @@
   .rh-stagger__l3{align-self:flex-end;}
 
   /* three staggered lines, sentence case, as a centred block sitting close
-     above the image + beats row */
-  .rh-waves__title{text-transform:none; width:100%; max-width:min(960px,74%);
+     above the image + beats row. The lifestyle headline is built the same way,
+     so both share this cap - each sits directly in its full-bleed section and
+     supplies its own 40px rail. */
+  .rh-waves__title, .rh-life__title{text-transform:none; width:100%; max-width:min(960px,74%);
     margin:0 auto clamp(20px,3.5vh,48px); padding:0 40px; box-sizing:border-box;
     gap:clamp(2px,.6vw,8px);}
 
@@ -155,11 +157,11 @@
   /* ---- SECTION 3: lifestyle (white) ---- */
   .rh-life{background:#f4f4f2; color:#151310; padding:clamp(18px,3vw,36px) 0 clamp(80px,10vw,150px); min-height:100svh; display:flex; flex-direction:column; justify-content:center; box-sizing:border-box;}
   .rh-life__inner{width:100%; padding:0 40px; box-sizing:border-box;}
-  /* sentence case and the same tight leading as .rh-waves__title, so the two
-     display lines read as a pair. It also carries .rh-stagger, so the lines run
-     the same left / centre / right staircase; the rules below still win over
-     .rh-stagger's own type because they are declared after it. */
-  .rh-life__title{margin:0 0 clamp(40px,5.5vw,76px); font-weight:800; text-transform:none; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title); display:flex; flex-direction:column; gap:clamp(2px,.6vw,8px);}
+  /* Reads as a pair with .rh-waves__title: same staircase (.rh-stagger), same
+     width cap and centring (shared rule above), same tight leading. Only the
+     gap below differs, so margin-bottom alone is set - margin:0 auto from the
+     shared rule has to survive for the block to stay centred. */
+  .rh-life__title{margin-bottom:clamp(40px,5.5vw,76px); font-weight:800; text-transform:none; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title); display:flex; flex-direction:column; gap:clamp(2px,.6vw,8px);}
   /* yellow marker. Base state is fully drawn, so reduced motion and no-JS
      still get the highlight; the motion-safe block draws it left to right. */
   .rh-life__title em, .rh-waves__title em{font-style:normal; color:#151310; padding:0 .1em;
@@ -348,7 +350,7 @@
   /* mobile: 16px side margins everywhere, widening to clear the notch in landscape */
   @media (max-width:640px){
     :root{ --rh-title:clamp(24px,6.6vw,30px); }
-    .rh-wrap, .rh-waves__inner, .rh-life__inner, .rh-defs__inner, .rh-waves__title{
+    .rh-wrap, .rh-waves__inner, .rh-life__inner, .rh-defs__inner, .rh-waves__title, .rh-life__title{
       padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
     /* the rail comes from the text block and the image's own margin, so both
        sides stay equal instead of doubling up on the left */
@@ -361,7 +363,7 @@
       bottom:calc(clamp(18px,4vh,50px) + 20px + env(safe-area-inset-bottom));}
     /* the 74% cap leaves ~245px of usable width at 375, which flattens the
        staggered lines into noise; let them use the full rail instead */
-    .rh-waves__title{max-width:none;}
+    .rh-waves__title, .rh-life__title{max-width:none;}
     .rh-def__body{font-size:13.5px;}
     /* the pinned scene still has to fit one screen at 320x568 */
     .rh-defs__media img, .rh-defs__media video{max-height:26svh;}
@@ -466,12 +468,12 @@
 
   <!-- ============ SECTION 3 — LIFESTYLE (dark) ============ -->
   <section class="rh-life">
+    <h2 class="rh-life__title rh-stagger rh-reveal rh-clip">
+      <span class="rh-stagger__l1">Precise enough</span>
+      <span class="rh-stagger__l2">to feel</span>
+      <span class="rh-stagger__l3"><em>effortless</em>.</span>
+    </h2>
     <div class="rh-life__inner">
-      <h2 class="rh-life__title rh-stagger rh-reveal rh-clip">
-        <span class="rh-stagger__l1">Precise enough</span>
-        <span class="rh-stagger__l2">to feel</span>
-        <span class="rh-stagger__l3"><em>effortless</em>.</span>
-      </h2>
       <div class="rh-life__grid">
         <figure class="rh-life__img rh-life__img--a rh-reveal">
           <img src="uploads/collect.jpg" alt="Digging through a record collection" class="rh-parallax" data-parallax="0.16" data-parallax-scale="1.2">
