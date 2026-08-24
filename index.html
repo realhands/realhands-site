@@ -99,7 +99,12 @@
   /* the name runs the full rail, and the photograph rises behind it */
   /* .rh-stagger supplies weight, size, case and the left/centre/right offsets,
      so this only has to sit in the curtain's stacking order */
-  .rh-story__head{position:relative; z-index:2;}
+  /* Sits inside the copy column, not across the section, so it takes no rail
+     or centring of its own. Everything about the type - size, weight, case and
+     the left/centre/right offsets - still comes from .rh-stagger, which is what
+     keeps it reading as a sibling of the two titles above it. */
+  .rh-story__head{position:relative; z-index:2; text-transform:none;
+    margin:0 0 clamp(18px,2.5vh,32px); width:100%;}
   /* same split, gap and alignment as .rh-waves__inner, so the two rows read as
      the same device. minmax(0,1fr) rather than 1fr keeps a wide child from
      flooring a track at its min-content width. */
@@ -141,7 +146,7 @@
      above the image + beats row. The lifestyle headline is built the same way,
      so both share this cap - each sits directly in its full-bleed section and
      supplies its own 40px rail. */
-  .rh-waves__title, .rh-life__title, .rh-story__head{text-transform:none; width:100%; max-width:min(960px,74%);
+  .rh-waves__title, .rh-life__title{text-transform:none; width:100%; max-width:min(960px,74%);
     margin:0 auto clamp(20px,3.5vh,48px); padding:0 40px; box-sizing:border-box;
     gap:clamp(2px,.6vw,8px);}
 
@@ -348,19 +353,21 @@
     .rh-defs--quad .rh-def{text-align:left !important; justify-self:start !important; max-width:none;}
     .rh-defs__media img, .rh-defs__media video{max-height:40svh; width:auto; max-width:100%;}
     .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
-    .rh-story__img{order:-1; margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;}
+    /* the headline lives in the copy column now, so the photograph can no
+       longer sit between it and the paragraph: title, sentence, then photo */
+    .rh-story__img{margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;}
     .rh-story__text{padding-top:0; padding-left:0;}
     .rh-story__img img{height:clamp(280px,46svh,420px);}
   }
   /* mobile: 16px side margins everywhere, widening to clear the notch in landscape */
   @media (max-width:640px){
     :root{ --rh-title:clamp(24px,6.6vw,30px); }
-    .rh-wrap, .rh-waves__inner, .rh-life__inner, .rh-defs__inner, .rh-waves__title, .rh-life__title, .rh-story__head{
+    .rh-wrap, .rh-waves__inner, .rh-life__inner, .rh-defs__inner, .rh-waves__title, .rh-life__title{
       padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
     /* the rail comes from the text block and the image's own margin, so both
        sides stay equal instead of doubling up on the left */
     .rh-story__inner{padding-left:0; padding-right:0;}
-    .rh-story__head, .rh-story__text{padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
+    .rh-story__text{padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
     .rh-story__img{margin:16px;}
     .rh-hero__eyebrow{left:max(16px, env(safe-area-inset-left)); right:max(16px, env(safe-area-inset-right));
       max-width:none; font-size:13px; line-height:1.45;}
@@ -368,7 +375,7 @@
       bottom:calc(clamp(18px,4vh,50px) + 20px + env(safe-area-inset-bottom));}
     /* the 74% cap leaves ~245px of usable width at 375, which flattens the
        staggered lines into noise; let them use the full rail instead */
-    .rh-waves__title, .rh-life__title, .rh-story__head{max-width:none;}
+    .rh-waves__title, .rh-life__title{max-width:none;}
     .rh-def__body{font-size:13.5px;}
     /* the pinned scene still has to fit one screen at 320x568 */
     .rh-defs__media img, .rh-defs__media video{max-height:40svh;}
@@ -509,13 +516,13 @@
   <!-- ============ SECTION 4 - THE STORY (closing block) ============ -->
   <section class="rh-story">
     <div class="rh-story__inner">
-      <h2 class="rh-story__head rh-stagger rh-reveal rh-clip">
-        <span class="rh-stagger__l1">Made by</span>
-        <span class="rh-stagger__l2">real hands</span>
-        <span class="rh-stagger__l3">in <em>Beirut and Paris</em>.</span>
-      </h2>
       <div class="rh-story__body">
         <div class="rh-story__text">
+          <h2 class="rh-story__head rh-stagger rh-reveal rh-clip">
+            <span class="rh-stagger__l1">Made by</span>
+            <span class="rh-stagger__l2">real hands</span>
+            <span class="rh-stagger__l3">in <em>Beirut and Paris</em>.</span>
+          </h2>
           <p class="rh-story__p">Each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
         </div>
         <figure class="rh-story__img">
