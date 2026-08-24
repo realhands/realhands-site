@@ -99,12 +99,6 @@
   /* the name runs the full rail, and the photograph rises behind it */
   /* .rh-stagger supplies weight, size, case and the left/centre/right offsets,
      so this only has to sit in the curtain's stacking order */
-  /* Sits inside the copy column, not across the section, so it takes no rail
-     or centring of its own. Everything about the type - size, weight, case and
-     the left/centre/right offsets - still comes from .rh-stagger, which is what
-     keeps it reading as a sibling of the two titles above it. */
-  .rh-story__head{position:relative; z-index:2; text-transform:none;
-    margin:0 0 clamp(18px,2.5vh,32px); width:100%;}
   /* same split, gap and alignment as .rh-waves__inner, so the two rows read as
      the same device. minmax(0,1fr) rather than 1fr keeps a wide child from
      flooring a track at its min-content width. */
@@ -149,6 +143,12 @@
   .rh-waves__title, .rh-life__title{text-transform:none; width:100%; max-width:min(960px,74%);
     margin:0 auto clamp(20px,3.5vh,48px); padding:0 40px; box-sizing:border-box;
     gap:clamp(2px,.6vw,8px);}
+  /* Sits inside the copy column, not across the section, so it takes no rail
+     or centring of its own. Size, weight and the left/right offsets still come
+     from .rh-stagger. It has to sit AFTER .rh-stagger to undo its uppercase:
+     both selectors are a single class, so source order is what decides. */
+  .rh-story__head{position:relative; z-index:2; text-transform:none;
+    margin:0 0 clamp(18px,2.5vh,32px); width:100%; gap:clamp(2px,.6vw,8px);}
 
   /* three engineering beats */
   .rh-waves__copy{display:flex; flex-direction:column; justify-content:center; padding-left:50px;}
@@ -519,9 +519,8 @@
       <div class="rh-story__body">
         <div class="rh-story__text">
           <h2 class="rh-story__head rh-stagger rh-reveal rh-clip">
-            <span class="rh-stagger__l1">Made by</span>
-            <span class="rh-stagger__l2">real hands</span>
-            <span class="rh-stagger__l3">in <em>Beirut and Paris</em>.</span>
+            <span class="rh-stagger__l1">Made by realhands</span>
+            <span class="rh-stagger__l3">in <em>Beirut and Paris</em></span>
           </h2>
           <p class="rh-story__p">Each <strong>realhands</strong> weight comes from a family workshop with thirty years in stainless steel and a passion for music.</p>
         </div>
