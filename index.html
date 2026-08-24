@@ -45,13 +45,13 @@
      the reading window get --rh-pin minus one viewport. Shortening this eats
      the reading window before it eats the curtain.
      --rh-title = one size for every section title, so they all match */
-  :root{ --rh-yellow:#EDE94D; --rh-pin:160svh; --rh-title:clamp(22px,2.9vw,40px); }
+  :root{ --rh-yellow:#EDE94D; --rh-pin:144svh; --rh-title:clamp(22px,2.9vw,40px); }
   /* Touch has no wheel to meter, so the four points stay scroll-paced there
      (see setupScrub's pointer:fine branch). 40vh would flick through all four
      in one swipe, so give the pin enough travel for each to hold. */
   @media (hover:none){
     /* 140svh of stepping travel plus the one-viewport curtain tail */
-    :root{ --rh-pin:240svh; }
+    :root{ --rh-pin:216svh; }
   }
 
   /* ---- full-bleed hero ---- */
@@ -97,8 +97,11 @@
   .rh-story{background:#f4f4f2; padding:0; min-height:100svh; display:flex; align-items:center; overflow:hidden;}
   .rh-story__inner{width:100%; padding:0 40px; box-sizing:border-box;}
   /* the name runs the full rail, and the photograph rises behind it */
+  /* same var(--rh-title) as every other section title, and the same tracking
+     and leading; the weight stays 700 (Archivo Bold) rather than the 800 the
+     others use, which was a deliberate choice for this one */
   .rh-story__head{margin:0; position:relative; z-index:2; font-weight:700;
-    letter-spacing:-.035em; line-height:.95; font-size:clamp(28px,6vw,100px);}
+    letter-spacing:-.02em; line-height:1; font-size:var(--rh-title);}
   .rh-story__head em{font-style:normal; color:inherit;}
   .rh-story__body{position:relative; z-index:1; display:grid;
     /* minmax(0,1fr) rather than 1fr, so a wide child can never floor the
@@ -198,12 +201,11 @@
     font-size:11px; letter-spacing:.1em; color:#8a8a86;}
   .rh-def__title{margin:10px 0 0; font-size:clamp(17px,1.6vw,22px); font-weight:700; letter-spacing:-.02em; line-height:1.15;}
   .rh-def__body{margin:8px 0 0; font-size:12.5px; line-height:1.55; color:#6f6f6b;}
-  .rh-defs__cta{margin-top:clamp(4px,1vw,12px);}
 
   /* ---- variant A: the four points as satellites around a centred video ---- */
   .rh-defs--quad .rh-defs__layout{display:grid;
     grid-template-columns:1fr clamp(230px,26vw,360px) 1fr;
-    grid-template-areas:"p1 media p2" "p4 media p3" "cta cta cta";
+    grid-template-areas:"p1 media p2" "p4 media p3";
     gap:clamp(16px,2.4vh,34px) clamp(20px,3vw,54px); align-items:center; justify-items:center;}
   .rh-defs--quad .rh-def{max-width:26ch;}
   .rh-defs--quad .rh-def--1{grid-area:p1; text-align:right; justify-self:end;}
@@ -211,7 +213,6 @@
   .rh-defs--quad .rh-def--3{grid-area:p3; text-align:left;  justify-self:start;}
   .rh-defs--quad .rh-def--4{grid-area:p4; text-align:right; justify-self:end;}
   .rh-defs--quad .rh-defs__media{grid-area:media;}
-  .rh-defs--quad .rh-defs__cta{grid-area:cta;}
 
 
   /* ---- SECTION 5: swirl (full-bleed closer) ---- */
@@ -342,7 +343,7 @@
        scales with the viewport instead of overflowing on short screens */
     /* the quadrant cannot hold once the columns get narrow: stack it */
     .rh-defs--quad .rh-defs__layout{grid-template-columns:1fr;
-      grid-template-areas:"media" "p1" "p2" "p3" "p4" "cta"; gap:clamp(10px,1.6svh,20px);}
+      grid-template-areas:"media" "p1" "p2" "p3" "p4"; gap:clamp(10px,1.6svh,20px);}
     .rh-defs--quad .rh-def{text-align:left !important; justify-self:start !important; max-width:none;}
     .rh-defs__media img, .rh-defs__media video{max-height:34svh; width:auto; max-width:100%;}
     .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
@@ -377,7 +378,7 @@
      single 100svh pin - measured 39px over at 320x568. Trim only where the
      screen is actually short, so taller phones keep the larger video. */
   @media (max-width:640px) and (max-height:680px){
-    .rh-defs__media img, .rh-defs__media video{max-height:18svh;}
+    .rh-defs__media img, .rh-defs__media video{max-height:22svh;}
     .rh-def__body{line-height:1.4;}
     .rh-defs--quad .rh-defs__layout{gap:8px;}
   }
@@ -437,9 +438,6 @@
             <h3 class="rh-def__title">Hear more of the record.</h3>
             <p class="rh-def__body">Added inertia tames resonance and micro-vibration, so the needle reads every groove true.</p>
           </div>
-          <div class="rh-defs__cta">
-            <a href="shop.html" class="rh-cta">See full specs &amp; order <span aria-hidden="true">&rarr;</span></a>
-          </div>
         </div>
       </div>
     </div>
@@ -451,7 +449,7 @@
     <div class="rh-stagger rh-waves__title rh-reveal rh-clip">
       <span class="rh-stagger__l1">Dense enough</span>
       <span class="rh-stagger__l2">to let the</span>
-      <span class="rh-stagger__l3"><em>music</em> speak</span>
+      <span class="rh-stagger__l3"><em>music speak</em></span>
     </div>
 
     <div class="rh-waves__inner">
@@ -482,7 +480,7 @@
     <h2 class="rh-life__title rh-stagger rh-reveal rh-clip">
       <span class="rh-stagger__l1">Precise enough</span>
       <span class="rh-stagger__l2">to feel</span>
-      <span class="rh-stagger__l3"><em>effortless</em>.</span>
+      <span class="rh-stagger__l3"><em>effortless</em></span>
     </h2>
     <div class="rh-life__inner">
       <div class="rh-life__grid">
@@ -696,11 +694,11 @@ class Component extends DCLogic {
       const dark = el.classList.contains('is-dark') ? frac >= 0.34 : frac >= 0.40;
       el.classList.toggle('is-dark', dark);
 
-      /* The marker draws once the section owns 70% of the screen. Measuring
+      /* The marker draws once the section owns 55% of the screen. Measuring
          against min(vh, height) keeps the fraction meaningful on mobile, where
          the section is 100svh but innerHeight is larger. Latches, so the
          marker never rewinds once it has drawn. */
-      if (visible / Math.min(vh, r.height) >= 0.70) el.classList.add('is-marked');
+      if (visible / Math.min(vh, r.height) >= 0.55) el.classList.add('is-marked');
       // the header only needs light ink while the dark block is actually under it
       document.documentElement.classList.toggle('rh-dark-zone', dark && r.top <= 90 && r.bottom > 90);
     };
