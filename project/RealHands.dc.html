@@ -196,19 +196,20 @@
      Base styles = the static fallback (reduced motion / no JS): a normal
      2x2 grid. The pin + stacked panels are layered on in the motion-safe
      block further down. */
-  .rh-defs{background:#f4f4f2; padding:clamp(24px,3vw,44px) 0 clamp(84px,10vw,150px); min-height:100svh; box-sizing:border-box;}
+  /* White, not the page's cream, so the render's white plate is invisible
+     without depending on a blend or a filter - WebKit honours neither on a
+     scrub-driven <video>, which is what put a white box on iOS. */
+  .rh-defs{background:#fff; padding:clamp(24px,3vw,44px) 0 clamp(84px,10vw,150px); min-height:100svh; box-sizing:border-box;}
   .rh-defs__pin{width:100%;}
   .rh-defs__inner{width:100%; padding:0 40px; box-sizing:border-box;}
   .rh-defs__media{margin:0;}
-  /* The render sits on a flat white plate that has to disappear into the page.
-     mix-blend-mode:multiply did that, but WebKit does not blend <video>, so on
-     iOS the plate painted as a white box on the cream. CSS filters DO apply to
-     video there, and the plate is a flat 255, so map it onto the page colour
-     instead of cancelling it: contrast() first, so the plate is a true 255
-     whatever the encode gives, then brightness(.957) lands 255 on 244 against
-     the page's #f4f4f2. No blend, so nothing above this can break it either. */
+  /* The render sits on a flat white plate. Rather than cancel it - multiply and
+     filter both did, but WebKit honours neither on this scrub-driven video, so
+     iOS got a white box - the section behind it is simply white too, so there is
+     nothing to cancel. contrast() stays, to hold the plate at a true 255 whatever
+     the encode gives; anything that darkens it would reopen the same gap. */
   .rh-defs__media img, .rh-defs__media video{width:100%; max-width:560px; height:auto; display:block; margin:0 auto;
-    background:#f4f4f2; filter:grayscale(1) contrast(1.18) brightness(.957);}
+    background:#fff; filter:grayscale(1) contrast(1.18);}
   .rh-def{padding-top:4px;}
   .rh-def__num{font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
     font-size:11px; letter-spacing:.1em; color:#8a8a86;}
@@ -300,7 +301,7 @@
     .rh-defs{height:calc(100svh + var(--rh-pin)); padding:0;}
     /* sticky makes its own stacking context, so the video's mix-blend-mode needs
        an opaque backdrop here or its white plate stops blending into the page */
-    .rh-defs__pin{position:sticky; top:0; height:100svh; display:flex; align-items:center; background:#f4f4f2;}
+    .rh-defs__pin{position:sticky; top:0; height:100svh; display:flex; align-items:center; background:#fff;}
     /* Section 3 is pulled up one viewport so it starts rising over section 2
        while that pin is still stuck: a sticky child cannot hold past its own
        section, so the overlap has to come from the next section. */
