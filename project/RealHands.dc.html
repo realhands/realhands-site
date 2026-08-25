@@ -132,10 +132,14 @@
   .rh-waves.is-dark .rh-def__body{color:rgba(244,244,242,.66);}
   .rh-waves__inner{width:100%; padding:0 40px; box-sizing:border-box; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,4vw,64px); align-items:center;}
   .rh-waves__media{position:relative; overflow:hidden; aspect-ratio:1/1; min-height:300px;}
-  /* Same treatment as the exploded view: re-encoded full-range with its matte
-     already lifted onto #0b0a08, so it matches the section in the dark state it
-     is read in, with no blend or filter to depend on. */
-  .rh-waves__media img, .rh-waves__media video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  /* Same problem as the exploded view, mirrored: the clip's matte is a flat
+     #000 against a #0b0a08 section, so it read as a box. screen() would drop it
+     out, but WebKit does not blend <video>, so use a filter here too. contrast
+     pivots on 0.5, so .914 lifts 0 to 11 - the section's own black - while only
+     dimming the white ripples to 244. Matches the section in its dark state,
+     which is the state it is read in. */
+  .rh-waves__media img, .rh-waves__media video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+    filter:contrast(.914);}
 
   .rh-stagger{display:flex; flex-direction:column; gap:clamp(6px,1vw,12px); color:#151310; font-weight:800; text-transform:uppercase; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title);}
   .rh-stagger__l1{align-self:flex-start;}
@@ -196,14 +200,15 @@
   .rh-defs__pin{width:100%;}
   .rh-defs__inner{width:100%; padding:0 40px; box-sizing:border-box;}
   .rh-defs__media{margin:0;}
-  /* No blend and no filter: the clip is encoded full-range with its plate
-     already sitting on #f4f4f2, so it matches the page as decoded, on any
-     engine. It used to ship limited-range - white stored at 235 - which Safari
-     composited unexpanded; that grey rectangle was the plate itself, not
-     anything CSS was doing, which is why neither multiply nor a filter ever
-     shifted it. Re-encode rather than re-tint if this section's colour changes. */
+  /* The render sits on a flat white plate that has to disappear into the page.
+     mix-blend-mode:multiply did that, but WebKit does not blend <video>, so on
+     iOS the plate painted as a white box on the cream. CSS filters DO apply to
+     video there, and the plate is a flat 255, so map it onto the page colour
+     instead of cancelling it: contrast() first, so the plate is a true 255
+     whatever the encode gives, then brightness(.957) lands 255 on 244 against
+     the page's #f4f4f2. No blend, so nothing above this can break it either. */
   .rh-defs__media img, .rh-defs__media video{width:100%; max-width:560px; height:auto; display:block; margin:0 auto;
-    background:#f4f4f2;}
+    background:#f4f4f2; filter:grayscale(1) contrast(1.18) brightness(.957);}
   .rh-def{padding-top:4px;}
   .rh-def__num{font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
     font-size:11px; letter-spacing:.1em; color:#8a8a86;}
