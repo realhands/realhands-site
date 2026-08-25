@@ -27,7 +27,9 @@
   @font-face{font-family:'ABC Diatype'; src:url('project/fonts/ABCDiatype-Medium.otf') format('opentype'); font-weight:500 600; font-display:swap;}
   @font-face{font-family:'ABC Diatype'; src:url('project/fonts/ABCDiatype-Bold.otf') format('opentype'); font-weight:700 900; font-display:swap;}
   @font-face{font-family:'ABC Diatype Mono'; src:url('project/fonts/ABCDiatypeMono-Variable.ttf') format('truetype-variations'); font-weight:100 900; font-display:swap;}
-  html,body{margin:0;padding:0}
+  /* overflow-x:clip, never hidden - hidden makes html/body a scroll
+     container and breaks the sticky pinning (.rh-hero, .rh-defs__pin). */
+  html,body{margin:0;padding:0;overflow-x:clip}
   body{background:#f4f4f2;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   /* Archivo carries the display voice; everything else is ABC Diatype (text + mono) */
   .rh-hero__title, .rh-stagger, .rh-life__title, .rh-story__head, .rh-def__title, .rh-swirl__line{font-family:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;}
@@ -129,8 +131,15 @@
   .rh-waves .rh-def__body{color:#6f6f6b;}
   .rh-waves.is-dark .rh-def__body{color:rgba(244,244,242,.66);}
   .rh-waves__inner{width:100%; padding:0 40px; box-sizing:border-box; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,4vw,64px); align-items:center;}
-  .rh-waves__media{position:relative; overflow:hidden; aspect-ratio:1/1; min-height:300px; background:#0b0a08;}
-  .rh-waves__media img, .rh-waves__media video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .rh-waves__media{position:relative; overflow:hidden; aspect-ratio:1/1; min-height:300px;}
+  /* The clip's matte is pure #000, the section is #0b0a08, so no background
+     can ever match it - the plate always read as a box. screen() returns the
+     backdrop wherever the source is black, so the matte drops out entirely
+     and only the ripples paint. Nothing above this may sit at opacity < 1 or
+     carry a transform, or the blend group isolates and the box comes back -
+     which is why the media div no longer carries .rh-reveal. */
+  .rh-waves__media img, .rh-waves__media video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+    mix-blend-mode:screen;}
 
   .rh-stagger{display:flex; flex-direction:column; gap:clamp(6px,1vw,12px); color:#151310; font-weight:800; text-transform:uppercase; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title);}
   .rh-stagger__l1{align-self:flex-start;}
@@ -363,6 +372,10 @@
          grid: it leaves the bottom pair on ragged baselines */
       align-items:start;}
     .rh-defs--quad .rh-def{text-align:left !important; justify-self:start !important; max-width:none;}
+    /* Stacked, each point is as wide as its track, so the satellites' inward
+       drift has nothing to drift across and its 26px shove is the whole of
+       the page's horizontal scroll. Keep the vertical arrival. */
+    .rh-defs--quad .rh-def{--dx:0px;}
     .rh-defs__media img, .rh-defs__media video{max-height:40svh; width:auto; max-width:100%;}
     .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
     /* the headline lives in the copy column now, so the photograph can no
@@ -380,7 +393,17 @@
        sides stay equal instead of doubling up on the left */
     .rh-story__inner{padding-left:0; padding-right:0;}
     .rh-story__text{padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));}
-    .rh-story__img{margin:16px;}
+    /* The whole photograph, uncropped: the figure hugs the image rather than
+       forcing a box, so nothing is cut off and nothing letterboxes either.
+       width:auto is the fix for the clipped edge - width:100% resolved
+       against the grid area while the margins sat outside it, making the
+       figure 32px wider than its column and pushing its right edge off. */
+    .rh-story__img{width:auto; height:auto; max-height:none; aspect-ratio:auto;
+      margin:16px max(16px, env(safe-area-inset-right)) 16px max(16px, env(safe-area-inset-left));}
+    /* !important is required: setupParallax writes transform inline every
+       frame. The 1.18 overscale existed so the drift never exposed an edge,
+       so with the image shown whole the drift has to go with it. */
+    .rh-story__img img{width:100%; height:auto; object-fit:contain; transform:none !important;}
     .rh-hero__eyebrow{left:max(16px, env(safe-area-inset-left)); right:max(16px, env(safe-area-inset-right));
       max-width:none; font-size:13px; line-height:1.45;}
     .rh-hero__title{left:max(16px, env(safe-area-inset-left)); right:max(16px, env(safe-area-inset-right));
@@ -484,7 +507,7 @@
     </div>
 
     <div class="rh-waves__inner">
-      <div class="rh-waves__media rh-reveal">
+      <div class="rh-waves__media">
         <video src="project/uploads/waves2.mp4" autoplay loop muted playsinline preload="auto" aria-label="Sound-wave ripples"></video>
       </div>
       <div class="rh-waves__copy">
