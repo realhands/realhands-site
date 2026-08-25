@@ -406,8 +406,15 @@
     .rh-story__img img{width:100%; height:auto; object-fit:contain; transform:none !important;}
     .rh-hero__eyebrow{left:max(16px, env(safe-area-inset-left)); right:max(16px, env(safe-area-inset-right));
       max-width:none; font-size:13px; line-height:1.45;}
+    /* 9.5vw holds the same width ratio as desktop, but a portrait screen is so
+       much taller that the headline drops from ~28% of the viewport's height to
+       ~8% and stops carrying the frame. 12vw fills the rail instead - "Better
+       Listening." is one unbreakable run, so it is what sets the ceiling: it
+       measures ~7.19x the font size, which at 12vw lands around 95% of the rail
+       at both 320 and 375. */
     .rh-hero__title{left:max(16px, env(safe-area-inset-left)); right:max(16px, env(safe-area-inset-right));
-      bottom:calc(clamp(18px,4vh,50px) + 20px + env(safe-area-inset-bottom));}
+      bottom:calc(clamp(18px,4vh,50px) + 20px + env(safe-area-inset-bottom));
+      font-size:12vw;}
     /* the 74% cap leaves ~245px of usable width at 375, which flattens the
        staggered lines into noise; let them use the full rail instead */
     .rh-waves__title, .rh-life__title{max-width:none;}
