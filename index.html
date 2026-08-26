@@ -79,7 +79,7 @@
      Only placement stays here. */
   .rh-hero__discover{margin-top:18px;}
   .rh-hero__title{position:absolute; z-index:2; left:40px; right:40px; bottom:calc(clamp(18px,4vh,50px) + 20px);
-    margin:0; color:var(--rh-yellow); font-weight:700; letter-spacing:-.04em; line-height:.92; font-size:clamp(30px,9.5vw,150px); text-wrap:balance;}
+    margin:0; color:var(--rh-yellow); font-weight:700; letter-spacing:-.04em; line-height:1; font-size:clamp(30px,9.5vw,150px); text-wrap:balance;}
 
   /* ---- content wrap below hero — same 40px rail as the header ---- */
   .rh-wrap{width:100%; padding:70px 40px 0; box-sizing:border-box; background:#f4f4f2;}
@@ -125,7 +125,7 @@
   /* ---- SECTION 3: waves + staggered headline ----
      Starts cream like its neighbours and turns dark once it owns the screen,
      then back to cream as it leaves. Section 4 stays cream throughout. */
-  .rh-waves{background:#f4f4f2; color:#151310; padding:clamp(43px,6vw,84px) 0 clamp(72px,10vw,140px); min-height:100svh; display:flex; flex-direction:column; justify-content:center; box-sizing:border-box;}
+  .rh-waves{background:#f4f4f2; color:#151310; padding:clamp(28px,4vw,64px) 0 clamp(72px,10vw,140px); min-height:100svh; display:flex; flex-direction:column; justify-content:center; box-sizing:border-box;}
   .rh-waves.is-dark{background:#0b0a08; color:#f4f4f2;}
   .rh-waves .rh-stagger, .rh-waves .rh-def__title{color:inherit;}
   .rh-waves .rh-def__body{color:#6f6f6b;}
@@ -152,7 +152,7 @@
      so both share this cap - each sits directly in its full-bleed section and
      supplies its own 40px rail. */
   .rh-waves__title, .rh-life__title{text-transform:none; width:100%; max-width:min(960px,74%);
-    margin:0 auto clamp(20px,3.5vh,48px); padding:0 40px; box-sizing:border-box;
+    margin:0 auto clamp(24px,3.5vh,48px); padding:0 40px; box-sizing:border-box;
     /* em, not a vw clamp: tied to the viewport the gap collapsed to about
        0.09em on a phone against 0.20em on desktop, so the lines bunched up at
        exactly the size where they had least room. In em it holds the same
@@ -163,7 +163,7 @@
      from .rh-stagger. It has to sit AFTER .rh-stagger to undo its uppercase:
      both selectors are a single class, so source order is what decides. */
   .rh-story__head{position:relative; z-index:2; text-transform:none;
-    margin:0 0 clamp(18px,2.5vh,32px); width:100%; gap:0.18em;}
+    margin:0 0 clamp(24px,3.5vh,48px); width:100%; gap:0.18em;}
 
   /* three engineering beats */
   .rh-waves__copy{display:flex; flex-direction:column; justify-content:center; padding-left:50px;}
@@ -175,20 +175,20 @@
   .rh-waves__beats .rh-def__body{max-width:34ch;}
 
   /* ---- SECTION 3: lifestyle (white) ---- */
-  .rh-life{background:#f4f4f2; color:#151310; padding:clamp(18px,3vw,36px) 0 clamp(80px,10vw,150px); min-height:100svh; display:flex; flex-direction:column; justify-content:center; box-sizing:border-box;}
+  .rh-life{background:#f4f4f2; color:#151310; padding:clamp(28px,4vw,64px) 0 clamp(80px,10vw,150px); min-height:100svh; display:flex; flex-direction:column; justify-content:center; box-sizing:border-box;}
   .rh-life__inner{width:100%; padding:0 40px; box-sizing:border-box;}
   /* Reads as a pair with .rh-waves__title: same staircase (.rh-stagger), same
      width cap and centring (shared rule above), same tight leading. Only the
      gap below differs, so margin-bottom alone is set - margin:0 auto from the
      shared rule has to survive for the block to stay centred. */
-  .rh-life__title{margin-bottom:clamp(40px,5.5vw,76px); font-weight:800; text-transform:none; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title); display:flex; flex-direction:column; gap:0.18em;}
+  .rh-life__title{font-weight:800; text-transform:none; letter-spacing:-.02em; line-height:1; font-size:var(--rh-title); display:flex; flex-direction:column; gap:0.18em;}
   /* yellow marker. Base state is fully drawn, so reduced motion and no-JS
      still get the highlight; the motion-safe block draws it left to right. */
   .rh-life__title em, .rh-waves__title em, .rh-story__head em{font-style:normal; color:#151310; padding:0 .1em;
     background-image:linear-gradient(var(--rh-yellow),var(--rh-yellow));
     background-repeat:no-repeat; background-position:0 50%; background-size:100% 100%;
     box-decoration-break:clone; -webkit-box-decoration-break:clone;}
-  .rh-life__grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,3vw,40px); align-items:start;}
+  .rh-life__grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,64px); align-items:start;}
   .rh-life__img{position:relative; margin:0; overflow:hidden;}
   .rh-life__img img{width:100%; aspect-ratio:3/4; object-fit:cover; display:block; filter:grayscale(1) contrast(1.04); transform:translate3d(0,0,0) scale(1.2);}
   .rh-life__img--b{margin-top:clamp(44px,11vw,130px);}
@@ -354,11 +354,11 @@
   }
 
   @media (max-width:820px){
-    .rh-waves__inner{grid-template-columns:1fr;}
+    .rh-waves__inner{grid-template-columns:1fr; gap:clamp(24px,3.5vh,48px);}
     .rh-waves__copy{padding-left:0;}
     /* full-width video at its native 720x760 ratio — no cropping */
     .rh-waves__media{min-height:0; width:100%; aspect-ratio:720/760;}
-    .rh-life__grid{grid-template-columns:1fr; gap:16px;}
+    .rh-life__grid{grid-template-columns:1fr; gap:clamp(24px,3.5vh,48px);}
     .rh-life__img--b{margin-top:0;}
     /* stacked pinned scene has to fit one screen: everything sized in svh so it
        scales with the viewport instead of overflowing on short screens */
@@ -378,7 +378,7 @@
        the page's horizontal scroll. Keep the vertical arrival. */
     .rh-defs--quad .rh-def{--dx:0px;}
     .rh-defs__media img, .rh-defs__media video{max-height:40svh; width:auto; max-width:100%;}
-    .rh-story__body{grid-template-columns:1fr; gap:clamp(20px,4vw,30px);}
+    .rh-story__body{grid-template-columns:1fr; gap:clamp(24px,3.5vh,48px);}
     /* the headline lives in the copy column now, so the photograph can no
        longer sit between it and the paragraph: title, sentence, then photo */
     .rh-story__img{margin-top:clamp(14px,3vw,26px); aspect-ratio:4/5; max-height:52svh;}
@@ -580,7 +580,7 @@
   <div class="rh-wrap">
 
     <!-- ============ FOOTER ============ -->
-    <footer style="margin-top:0; padding-top:34px; padding-bottom:60px; border-top:1px solid rgba(0,0,0,.16);">
+    <footer style="margin-top:0; padding-top:34px; padding-bottom:60px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:32px;">
         <div style="display:flex; flex-direction:column; gap:11px; font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase;">
           <span style="color:#6f6f6f;">© 2026 realhands</span>
