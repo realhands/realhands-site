@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="./image-slot.js"></script>
-<script src="./rh-header.js?v=15"></script>
+<script src="./rh-header.js?v=16"></script>
 <script src="./rh-button.js?v=1"></script>
 <script src="./rh-scroll.js?v=14"></script>
 <style>
@@ -47,7 +47,7 @@
      the reading window get --rh-pin minus one viewport. Shortening this eats
      the reading window before it eats the curtain.
      --rh-title = one size for every section title, so they all match */
-  :root{ --rh-yellow:#C9D14E; --rh-pin:144svh; --rh-title:clamp(22px,2.9vw,40px); }
+  :root{ --rh-yellow:#D9E703; --rh-pin:144svh; --rh-title:clamp(22px,2.9vw,40px); }
   /* Touch has no wheel to meter, so the four points stay scroll-paced there
      (see setupScrub's pointer:fine branch). 40vh would flick through all four
      in one swipe, so give the pin enough travel for each to hold. */
@@ -488,7 +488,7 @@
             <p class="rh-def__body">Maximum mass in a compact form. Small enough for a record bag, present enough for the platter.</p>
           </div>
           <figure class="rh-defs__media">
-            <video src="uploads/assembly.mp4" poster="uploads/assembly-poster.jpg" muted playsinline preload="auto" aria-label="Exploded view of the realhands record weight assembling"></video>
+            <video src="uploads/assembly.mp4" poster="uploads/assembly-poster.jpg?v=2" muted playsinline preload="auto" aria-label="Exploded view of the realhands record weight assembling"></video>
           </figure>
           <div class="rh-def rh-def--4">
             <div class="rh-def__num">04</div>
