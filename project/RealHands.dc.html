@@ -1,8 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>realhands — Handcrafted stainless steel record weights</title>
+<meta name="description" content="Handmade record weights machined from solid 316L stainless steel. Made to still your record, and to let your system play everything it was built for.">
+<link rel="canonical" href="https://realhands.co/">
+<meta name="theme-color" content="#f4f4f2">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="realhands">
+<meta property="og:title" content="realhands — Handcrafted stainless steel record weights">
+<meta property="og:description" content="Handmade record weights machined from solid 316L stainless steel. Made to still your record, and to let your system play everything it was built for.">
+<meta property="og:url" content="https://realhands.co/">
+<meta property="og:image" content="https://realhands.co/project/uploads/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A realhands stainless steel record weight">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="realhands — Handcrafted stainless steel record weights">
+<meta name="twitter:description" content="Handmade record weights machined from solid 316L stainless steel. Made to still your record, and to let your system play everything it was built for.">
+<meta name="twitter:image" content="https://realhands.co/project/uploads/og-cover.jpg">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -516,7 +533,7 @@
 
     <div class="rh-waves__inner">
       <div class="rh-waves__media rh-reveal">
-        <video src="uploads/waves2.mp4" autoplay loop muted playsinline preload="auto" aria-label="Sound-wave ripples"></video>
+        <video data-src="uploads/waves2.mp4" loop muted playsinline preload="none" aria-label="Sound-wave ripples"></video>
       </div>
       <div class="rh-waves__copy">
         <div class="rh-waves__beats">
@@ -551,7 +568,7 @@
           <img src="uploads/collect.jpg" alt="Digging through a record collection" class="rh-parallax" data-parallax="0.16" data-parallax-scale="1.2">
         </figure>
         <figure class="rh-life__img rh-life__img--b rh-reveal">
-          <img src="uploads/lifestyleimage1.png" alt="Adjusting the tonearm on a turntable with a realhands weight on the record" class="rh-parallax" data-parallax="0.10" data-parallax-scale="1.2">
+          <img src="uploads/lifestyleimage1.jpg" alt="Adjusting the tonearm on a turntable with a realhands weight on the record" class="rh-parallax" data-parallax="0.10" data-parallax-scale="1.2">
         </figure>
       </div>
     </div>
@@ -621,6 +638,12 @@ class Component extends DCLogic {
     const v = this.heroVideoEl;
     if (v) {
       v.muted = true;
+      /* defaultMuted is what reflects back onto the `muted` CONTENT attribute.
+         The renderer compiles this page and drops that attribute (it treats
+         muted as a property-only prop), and iOS decides whether inline autoplay
+         is allowed from the attribute at load time - so setting the property
+         alone left the phone waiting for a tap. */
+      v.defaultMuted = true;
       v.loop = true;
       v.autoplay = true;
       v.playsInline = true;
@@ -633,12 +656,34 @@ class Component extends DCLogic {
     const loopVids = document.querySelectorAll('.rh-waves__media video, .rh-swirl video');
     loopVids.forEach((wv) => {
       wv.muted = true;
+      wv.defaultMuted = true;   // see the hero note above - iOS reads the attribute
       wv.loop = true;
       wv.playsInline = true;
       const playWv = () => wv.play().catch(() => {});
       wv.addEventListener('ended', () => { wv.currentTime = 0; playWv(); });
       wv.addEventListener('pause', () => { if (!wv.ended && wv.paused) playWv(); });
-      playWv();
+      /* Deferred on purpose. This clip is the heaviest asset on the page and
+         lives two sections down, but it was downloading in front of the hero
+         video - the one thing actually on screen. preload="none" alone does not
+         hold it: the fetch begins the moment the renderer inserts an element
+         that already carries a src, measured starting at 29ms, well before this
+         code runs. So the markup ships the URL in data-src and nothing is
+         fetched until the section is within a screen of the viewport. */
+      const start = () => {
+        if (wv.dataset.src && !wv.getAttribute('src')) wv.setAttribute('src', wv.dataset.src);
+        playWv();
+      };
+      const sec = wv.closest('section') || wv;
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((es) => {
+          for (let i = 0; i < es.length; i++) {
+            if (es[i].isIntersecting) { io.disconnect(); start(); return; }
+          }
+        }, { rootMargin: '100% 0px' });
+        io.observe(sec);
+      } else {
+        start();
+      }
     });
   }
 
