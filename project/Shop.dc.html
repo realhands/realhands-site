@@ -89,6 +89,14 @@
   /* the arrows are hover-revealed, which never happens on a touch screen */
   @media (hover:none){
     .rh-carousel .rh-arrow{opacity:1; width:44px !important; height:44px !important;}
+    /* Same trick as the pill below, for a worse problem: these arrows are the
+       only way to change the photo - the dots are indicators, not buttons - so
+       a near-miss does nothing visible and just reads as the page ignoring you.
+       44 is the documented floor, not a comfortable target, so the circle keeps
+       its size and the thumb gets a 64px square to land in. The parent has no
+       overflow:hidden, so this is not clipped. */
+    .rh-carousel .rh-arrow::after{content:""; position:absolute; top:50%; left:50%;
+      width:64px; height:64px; transform:translate(-50%,-50%);}
     /* grow the hit area, not the pill: min-height stretched it out of shape */
     .rh-pill{position:relative;}
     .rh-pill::after{content:""; position:absolute; left:0; right:0; top:50%; height:44px; transform:translateY(-50%);}
