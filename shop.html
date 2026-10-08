@@ -81,6 +81,11 @@
   .rh-prod__sub{font-family:'ABC Diatype Mono','IBM Plex Mono',ui-monospace,monospace;
     font-size:clamp(17px,2vw,22px); font-weight:700; letter-spacing:-.01em; line-height:1;
     text-transform:uppercase; color:#6f6f6f;}
+  /* The mass is the headline fact, so the material rides alongside it several
+     weights lighter - one label with a primary and a secondary half, rather
+     than two things competing at the same volume. The face is variable
+     100-900, so 300 is a real weight here, not a synthesised one. */
+  .rh-prod__sub span{font-weight:300; letter-spacing:0; margin-left:.6em;}
   @media (prefers-reduced-motion:no-preference){
     .rh-prod__title em{background-size:0% 100%;
       transition:background-size .8s cubic-bezier(.22,.75,.25,1) .15s;}
@@ -119,7 +124,7 @@
       <div class="rh-card" style="display:flex; flex-direction:column; gap:16px; border:1.5px solid #151310; border-radius:2px; padding:24px 22px;">
         <div class="rh-prod__head">
           <h3 class="rh-prod__title rh-reveal"><em>The Everyday Companion</em></h3>
-          <div class="rh-prod__sub">500G</div>
+          <div class="rh-prod__sub">500G<span>100% Stainless</span></div>
         </div>
         <p style="margin:0; font-size:13.5px; line-height:1.55; color:#3a3a3a;">For the travelling DJ or the home listener. Double-sided — flat for 12&quot; records, built-in 45 adapter for 7&quot;. Light enough to pack two. Heavy enough to matter. Slips into any record bag, so it's always with you.</p>
         <div class="rh-carousel" style="position:relative;">
@@ -156,7 +161,7 @@
       <div class="rh-card" style="display:flex; flex-direction:column; gap:16px; border:1.5px solid #151310; border-radius:2px; padding:24px 22px;">
         <div class="rh-prod__head">
           <h3 class="rh-prod__title rh-reveal"><em>Audiophile Grade</em></h3>
-          <div class="rh-prod__sub">800G</div>
+          <div class="rh-prod__sub">800G<span>100% Stainless</span></div>
         </div>
         <p style="margin:0; font-size:13.5px; line-height:1.55; color:#3a3a3a;">More mass, more control. Includes a retractable 45 adapter, that means it handles both 12&quot; and 7&quot; records without compromise. Built for setups that demand the most from every groove.</p>
         <div class="rh-carousel" style="position:relative;">
